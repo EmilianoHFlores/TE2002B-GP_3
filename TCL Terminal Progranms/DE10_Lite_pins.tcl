@@ -18,3 +18,5 @@ set_location_assignment PIN_A13 -to SW[6]
 set_location_assignment PIN_A14 -to SW[7] 
 set_location_assignment PIN_B14 -to SW[8] 
 set_location_assignment PIN_F15 -to SW[9]
+
+set_location_assignment PIN_D15 -to y[7]
