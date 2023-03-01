@@ -1,0 +1,96 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/joemi/Documents/Quartus_GP3/TE2002B-GP_3/Actividad3-1_Equipo3/simulation/modelsim
+Ecarlights
+Z1 w1677632594
+Z2 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z3 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z4 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+R0
+Z5 8C:/Users/joemi/Documents/Quartus_GP3/TE2002B-GP_3/Actividad3-1_Equipo3/CarLights.vhd
+Z6 FC:/Users/joemi/Documents/Quartus_GP3/TE2002B-GP_3/Actividad3-1_Equipo3/CarLights.vhd
+l0
+L5
+V^l7I3jWk5AV5k3lUk860i2
+!s100 MU8>XaL3V412@SJ8>izci1
+Z7 OV;C;10.5b;63
+31
+Z8 !s110 1677632829
+!i10b 1
+Z9 !s108 1677632829.000000
+Z10 !s90 -reportprogress|300|-93|-work|work|C:/Users/joemi/Documents/Quartus_GP3/TE2002B-GP_3/Actividad3-1_Equipo3/CarLights.vhd|
+Z11 !s107 C:/Users/joemi/Documents/Quartus_GP3/TE2002B-GP_3/Actividad3-1_Equipo3/CarLights.vhd|
+!i113 1
+Z12 o-93 -work work
+Z13 tExplicit 1 CvgOpt 0
+Abehavior
+R2
+R3
+R4
+DEx4 work 9 carlights 0 22 ^l7I3jWk5AV5k3lUk860i2
+l26
+L11
+VfE81=BzW>KZ]YZjmfm0hL1
+!s100 CjjIT9<lCiXbf^2UOfB571
+R7
+31
+R8
+!i10b 1
+R9
+R10
+R11
+!i113 1
+R12
+R13
+Etb_carlights
+Z14 w1677632607
+Z15 DPx4 ieee 16 std_logic_textio 0 22 V5TSK`;aJKC<l]CEg1>mz1
+Z16 DPx4 ieee 15 std_logic_arith 0 22 [G314=:2zXJ`VORJe1J@Z1
+Z17 DPx4 ieee 16 std_logic_signed 0 22 C<aanc0R`<LWPSe[JYRP^3
+R3
+R4
+R0
+Z18 8C:/Users/joemi/Documents/Quartus_GP3/TE2002B-GP_3/Actividad3-1_Equipo3/tb_CarLights.vhd
+Z19 FC:/Users/joemi/Documents/Quartus_GP3/TE2002B-GP_3/Actividad3-1_Equipo3/tb_CarLights.vhd
+l0
+L8
+VlIl7IELQE@mUa@_BB9jF:0
+!s100 ;>Q4J[E@fPWYJC@Yb4gEW3
+R7
+31
+R8
+!i10b 1
+R9
+Z20 !s90 -reportprogress|300|-93|-work|work|C:/Users/joemi/Documents/Quartus_GP3/TE2002B-GP_3/Actividad3-1_Equipo3/tb_CarLights.vhd|
+Z21 !s107 C:/Users/joemi/Documents/Quartus_GP3/TE2002B-GP_3/Actividad3-1_Equipo3/tb_CarLights.vhd|
+!i113 1
+R12
+R13
+Atest_architecture
+R15
+R16
+R17
+R3
+R4
+DEx4 work 12 tb_carlights 0 22 lIl7IELQE@mUa@_BB9jF:0
+l27
+L12
+VWL<752YYhiYAZWXYknc4e2
+!s100 <M_58;E64VzYlNOlY:IY:1
+R7
+31
+R8
+!i10b 1
+R9
+R20
+R21
+!i113 1
+R12
+R13
