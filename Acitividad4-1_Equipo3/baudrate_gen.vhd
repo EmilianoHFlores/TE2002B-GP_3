@@ -6,7 +6,7 @@ entity baudrate_gen is
 	generic(
     		--M = clk_freq / baudrate, without oversampling
 		M: integer 	:= 5208;	--M = 50 MHz / 9600
-		N: integer	:= 13;		--size of M
+		N: integer	:= 13		--size of M
 	);
 	port(
 		clk, reset:	in 	std_logic;
