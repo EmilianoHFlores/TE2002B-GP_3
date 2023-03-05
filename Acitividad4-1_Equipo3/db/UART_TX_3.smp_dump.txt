@@ -1,7 +1,0 @@
-
-State Machine - |UART_TX_3|present_state
-Name present_state.s_stop present_state.s_data present_state.s_start present_state.s_idle 
-present_state.s_idle 0 0 0 0 
-present_state.s_start 0 0 1 1 
-present_state.s_data 0 1 0 1 
-present_state.s_stop 1 0 0 1 
