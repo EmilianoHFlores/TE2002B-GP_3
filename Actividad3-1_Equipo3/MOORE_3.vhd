@@ -57,152 +57,175 @@ begin
 		
 		--Only activated when lights are off (sequence of lights has completed its cycle)
 		--Allows for skipping delay if lights are off, in state s0 (to activate a sequence instantly)
+		skip_delay_3 <= '0';
 		
-		if (present_state_3 = s0) then
-			-- interm_3 priority
+		case present_state_3 is
+			-- most actions will not require to skip delay
+
+			when s0 =>
 				if (interm_3 = '1') then
-					 next_state_3 <= s3_1;
-					 delay_sel_3 <= '0';
-				elsif (left_3 = '1') then
-					 next_state_3 <= s1_1;
-					 delay_sel_3 <= '1';
+					next_state_3 <= s3_1;
+					delay_sel_3 <= '0';
+					skip_delay_3 <= '1';
 				elsif (right_3 = '1') then
-					 next_state_3 <= s2_1;
-					 delay_sel_3 <= '1';
-				else 
+					next_state_3 <= s2_1;
+					delay_sel_3 <= '1';
+					skip_delay_3 <= '1';
+				elsif (left_3 = '1') then
+					next_state_3 <= s1_1;
+					delay_sel_3 <= '1';
+					skip_delay_3 <= '1';
+				else
 					next_state_3 <= s0;
 					delay_sel_3 <= '0';
 				end if;
-				skip_delay_3 <= '1';
-		
-		-- Do not rerun the process if delay has been skipped (would result in jumping from first step in sequence to second)
-		elsif (skip_delay_3 = '1') then
-			skip_delay_3 <= '0';
-			
-		else
-			if (present_state_3 = s1_0 or present_state_3 = s2_0 or present_state_3 = s3_0) then
-				-- Change of sequence requires previous one to finish
-				skip_delay_3 <= '0';
 				
-				if (delay_done_3 = '1') then 
-					-- intermittent priority
+			when s1_1 =>
+				if (delay_done_3 = '1') then
+					next_state_3 <= s1_2;
+					delay_sel_3 <= '1';
+				end if;
+				
+			when s1_2 =>
+				if (delay_done_3 = '1') then
+					next_state_3 <= s1_3;
+					delay_sel_3 <= '1';
+				end if;
+			when s1_3 =>
+				if (delay_done_3 = '1') then
+					next_state_3 <= s1_0;
+					delay_sel_3 <= '1';
+				end if;
+			
+			when s1_0 =>
+				if (delay_done_3 = '1') then
 					if (interm_3 = '1') then
-						 next_state_3 <= s3_1;
-					elsif (left_3 = '1') then
-						 next_state_3 <= s1_1;
+						next_state_3 <= s3_1;
+						delay_sel_3 <= '0';
 					elsif (right_3 = '1') then
-						 next_state_3 <= s2_1;
-					else 
+						next_state_3 <= s2_1;
+						delay_sel_3 <= '1';
+					elsif (left_3 = '1') then
+						next_state_3 <= s1_1;
+						delay_sel_3 <= '1';
+					else
 						next_state_3 <= s0;
+						delay_sel_3 <= '0';
 					end if;
 				end if;
 			
-			elsif (delay_done_3 = '1') then
-				skip_delay_3 <= '0';
+			when s2_1 =>
+				if (delay_done_3 = '1') then
+					next_state_3 <= s2_2;
+					delay_sel_3 <= '1';
+				end if;
 				
-				case present_state_3 is
-					when s0 =>
-						next_state_3 <= s0;
-							
-					when s1_1 =>
-						next_state_3 <= s1_2;
-					
-					when s1_2 =>
-						next_state_3 <= s1_3;
-					
-					when s1_3 =>
-						next_state_3 <= s1_0;
-					
-					when s1_0 =>
-						next_state_3 <= s1_1;
-							 
-					when s2_1 =>
-						next_state_3 <= s2_2;
-					
-					when s2_2 =>
-						next_state_3 <= s2_3;
-					
-					when s2_3 =>
-						next_state_3 <= s2_0;
-					
-					when s2_0 =>
-						next_state_3 <= s2_1;
-						 
-					when s3_1 =>
-						next_state_3 <= s3_0;
-					
-					when s3_0 =>
+			when s2_2 =>
+				if (delay_done_3 = '1') then
+					next_state_3 <= s2_3;
+					delay_sel_3 <= '1';
+				end if;
+			when s2_3 =>
+				if (delay_done_3 = '1') then
+					next_state_3 <= s2_0;
+					delay_sel_3 <= '1';
+				end if;
+			
+			when s2_0 =>
+				if (delay_done_3 = '1') then
+					if (interm_3 = '1') then
 						next_state_3 <= s3_1;
-						 
-					when others =>
+						delay_sel_3 <= '0';
+					elsif (right_3 = '1') then
+						next_state_3 <= s2_1;
+						delay_sel_3 <= '1';
+					elsif (left_3 = '1') then
+						next_state_3 <= s1_1;
+						delay_sel_3 <= '1';
+					else
 						next_state_3 <= s0;
-				
-				end case;
-			end if;
-		end if;
-		
+						delay_sel_3 <= '0';
+					end if;
+				end if;
+
+			when s3_1 =>
+				if (delay_done_3 = '1') then
+					next_state_3 <= s3_0;
+					delay_sel_3 <= '0';
+				end if;
+			
+			when s3_0 =>
+				if (delay_done_3 = '1') then
+					if (interm_3 = '1') then
+						next_state_3 <= s3_1;
+						delay_sel_3 <= '0';
+					elsif (right_3 = '1') then
+						next_state_3 <= s2_1;
+						delay_sel_3 <= '1';
+					elsif (left_3 = '1') then
+						next_state_3 <= s1_1;
+						delay_sel_3 <= '1';
+					else
+						next_state_3 <= s0;
+						delay_sel_3 <= '0';
+					end if;
+				end if;
+		end case;
 	end process;
 	
 	-- State actions
-	C2 : process(clk_3, delay_done_3)
+	C2 : process(present_state_3)
 	begin
+		case present_state_3 is
+			when s0 =>
+				rLights_3 <= "000";
+				lLights_3 <= "000";
+					
+			when s1_1 =>
+				rLights_3 <= "000";
+				lLights_3 <= "001";
+			
+			when s1_2 =>
+				rLights_3 <= "000";
+				lLights_3 <= "011";
+			
+			when s1_3 =>
+				rLights_3 <= "000";
+				lLights_3 <= "111";
+			
+			when s1_0 =>
+				rLights_3 <= "000";
+				lLights_3 <= "000";
+						
+			when s2_1 =>
+				lLights_3 <= "000";
+				rLights_3 <= "001";
+			
+			when s2_2 =>
+				lLights_3 <= "000";
+				rLights_3 <= "011";
+			
+			when s2_3 =>
+				lLights_3 <= "000";
+				rLights_3 <= "111";
+			
+			when s2_0 =>
+				lLights_3 <= "000";
+				rLights_3 <= "000";
+					
+			when s3_1 =>
+				lLights_3 <= "111";
+				rLights_3 <= "111";
+			
+			when s3_0 =>
+				lLights_3 <= "000";
+				rLights_3 <= "000";
+					
+			when others =>
+				rLights_3 <= "000";
+				lLights_3 <= "000";
 		
-		if (delay_done_3='1') then
-			if (delay_done_3 = '1') then
-				-- State actions
-				case present_state_3 is
-					when s0 =>
-						rLights_3 <= "000";
-						lLights_3 <= "000";
-							
-					when s1_1 =>
-						rLights_3 <= "000";
-						lLights_3 <= "001";
-					
-					when s1_2 =>
-						rLights_3 <= "000";
-						lLights_3 <= "011";
-					
-					when s1_3 =>
-						rLights_3 <= "000";
-						lLights_3 <= "111";
-					
-					when s1_0 =>
-						rLights_3 <= "000";
-						lLights_3 <= "000";
-							 
-					when s2_1 =>
-						lLights_3 <= "000";
-						rLights_3 <= "001";
-					
-					when s2_2 =>
-						lLights_3 <= "000";
-						rLights_3 <= "011";
-					
-					when s2_3 =>
-						lLights_3 <= "000";
-						rLights_3 <= "111";
-					
-					when s2_0 =>
-						lLights_3 <= "000";
-						rLights_3 <= "000";
-						 
-					when s3_1 =>
-						lLights_3 <= "111";
-						rLights_3 <= "111";
-					
-					when s3_0 =>
-						lLights_3 <= "000";
-						rLights_3 <= "000";
-						 
-					when others =>
-						rLights_3 <= "000";
-						lLights_3 <= "000";
-				
-				end case;
-				
-			end if;
-		end if;
+		end case;
 	end process;
 	
 	
