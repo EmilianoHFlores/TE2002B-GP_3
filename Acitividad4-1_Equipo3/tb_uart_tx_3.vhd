@@ -28,7 +28,7 @@ architecture Behave of tb_uart_tx_3 is
 	port(in_sw : in std_logic_vector(7 downto 0);
 		  tx_start,clk,rst: in std_logic;
 		  s_tx, tx_done_tick: out std_logic;
-		  state_out : out std_logic_vector(1 downto 0)
+		  tx_state : out std_logic_vector(1 downto 0)
 		  );
 		  
 	end component UART_TX_3;	
