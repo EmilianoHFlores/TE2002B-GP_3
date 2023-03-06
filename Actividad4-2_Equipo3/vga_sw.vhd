@@ -25,11 +25,13 @@ ARCHITECTURE vga_sw OF vga_sw IS
 
 -- Define constants
     constant CLK_FREQ: integer := 50000000;  -- 50 MHz clock frequency
-    constant DELAY_1SEC: integer := 50000000;  -- 1 second delay at 100 MHz
-
+	 constant FPS : INTEGER := 60;
+	constant DELAY: integer := CLK_FREQ/FPS;  -- 1 second delay at 100 MHz
+	 constant Jump_line : integer := 1;
+	 
     -- Define signals
     signal counter: integer range 0 to 50000001 := 0;
-SIGNAL delay_down : STD_LOGIC := '0';
+SIGNAL delay_done : STD_LOGIC := '0';
 SIGNAL Hactive, Vactive, dena: STD_LOGIC;
 SIGNAL line_counter_sup : INTEGER := 340;
 SIGNAL line_counter_inf : INTEGER := 140;
@@ -112,9 +114,9 @@ BEGIN
 			ELSE
 				R <= (OTHERS => '1');
 				G <= (OTHERS => '1');
-				B <= (OTHERS => '1');
+				B <= (OTHERS => '1'); 	
 			END IF;
-
+			ElSE
 			R <= (OTHERS => '0');
 			G <= (OTHERS => '0');
 			B <= (OTHERS => '0');
@@ -123,23 +125,34 @@ BEGIN
 		END IF;
 	
 	END PROCESS;
-	
-	
+		-----------Botones---------------
 		PROCESS(SW)
 		begin
-		IF(rising_edge(delay_down)) THEN
-			if(SW(0) = '1') THEN
-				line_counter_sup <= line_counter_sup + 10;
-				line_counter_inf <= line_counter_inf + 10;
+		IF(rising_edge(delay_done)) THEN
+			if(SW(0) = '1' and line_counter_inf >= 0) THEN
+				line_counter_sup <= line_counter_sup - Jump_line;
+				line_counter_inf <= line_counter_inf - Jump_line;
+			END IF;
+			if(SW(1) = '1' and line_counter_sup <= 480) THEN
+				line_counter_sup <= line_counter_sup + Jump_line;
+				line_counter_inf <= line_counter_inf + Jump_line;
+			END IF;
+			if(SW(2) = '1' and column_counter_inf >= 0) THEN
+				column_counter_sup <= column_counter_sup - Jump_line;
+				column_counter_inf <= column_counter_inf - Jump_line;
+			END IF;
+			if(SW(3) = '1' and column_counter_sup <= 640) THEN
+				column_counter_sup <= column_counter_sup + Jump_line;
+				column_counter_inf <= column_counter_inf + Jump_line;
 			END IF;
 		END IF;
 		END PROCESS;
 		
 			
-		delay: process (clk)
+		delay_S: process (clk)
 		begin
 			if (rising_edge(clk)) then
-				if (counter>=DELAY_1SEC) then
+				if (counter>=DELAY) then
 					counter <= 0;
 					delay_done <= '1';
 				else
@@ -148,5 +161,6 @@ BEGIN
 				end if;
 			end if;
 	end process;
+
 		
 END vga_sw;
