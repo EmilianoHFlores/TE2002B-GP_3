@@ -1,3 +1,4 @@
+-- Actividad 3.1 TE2002B, Equipo 3, testbench
 LIBRARY ieee;
 USE	ieee.std_logic_1164.ALL;
 USE	ieee.std_logic_signed.ALL;
