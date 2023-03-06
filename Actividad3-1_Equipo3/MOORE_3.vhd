@@ -55,13 +55,13 @@ begin
 	
 		begin
 		
-		--Only activated when lights are off (sequence of lights has completed its cycle)
-		--Allows for skipping delay if lights are off, in state s0 (to activate a sequence instantly)
+		-- most actions will not require to skip delay
 		skip_delay_3 <= '0';
 		
 		case present_state_3 is
-			-- most actions will not require to skip delay
-
+			
+			--Only activated when lights are off (sequence of lights has completed its cycle)
+			--Allows for skipping delay if lights are off, in state s0 (to activate a sequence instantly)
 			when s0 =>
 				if (interm_3 = '1') then
 					next_state_3 <= s3_1;
@@ -97,6 +97,7 @@ begin
 					delay_sel_3 <= '1';
 				end if;
 			
+			-- Only s1_0, s2_0, s3_0 and s0 allow to change lights behavior, as the cycle has ended.
 			when s1_0 =>
 				if (delay_done_3 = '1') then
 					if (interm_3 = '1') then
