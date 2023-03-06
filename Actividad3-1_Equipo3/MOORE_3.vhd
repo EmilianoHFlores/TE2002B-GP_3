@@ -16,8 +16,8 @@ signal present_state_3, next_state_3 : state_type;
 
 -- Define constants
     constant clk_3_FREQ: integer := 50000000;  -- 50 MHz clock frequency
-    constant DELAY_100ns_3: integer := 5;  -- A delay of 100ns for intermittents (5 cycles of 20ns)
-	constant DELAY_20ns_3: integer := 1;  -- A delay of 20ns for directional lights (the 4 state cycle lasts 80ns)
+    constant DELAY_100ns_3: integer := 5;  -- A delay of 100ns for intermittents (The 2 state cycle lasts 200ns) for intermittent lights
+	constant DELAY_40ns_3: integer := 2;  -- A delay of 40ns for directional lights (the 4 state cycles last 160ns) for right and left lights
 
     -- Define signals
     signal counter_3: integer range 0 to 50000001 := 0;
@@ -40,7 +40,7 @@ begin
 	begin
 		if (rising_edge(clk_3)) then
 			-- Checks if delay is skipped, or if delay is done (either 100ns or 20ns according to delay_sel_3)
-			if ((counter_3>=DELAY_100ns_3 and delay_sel_3 = '0') or (counter_3>=DELAY_20ns_3 and delay_sel_3 = '1') or skip_delay_3='1') then
+			if ((counter_3>=DELAY_100ns_3 and delay_sel_3 = '0') or (counter_3>=DELAY_40ns_3 and delay_sel_3 = '1') or skip_delay_3='1') then
 				counter_3 <= 0;
 				delay_done_3 <= '1';
 			else

@@ -20,7 +20,6 @@ ARCHITECTURE test_architecture OF tb_MOORE_3 IS
 SIGNAL	clk_3_tb : STD_LOGIC := '0';
 SIGNAL rst_3_tb, left_3_tb, right_3_tb, interm_3_tb	:	STD_LOGIC := '0';			--INPUT
 SIGNAL	lLights_3_tb, rLights_3_tb				:	STD_LOGIC_VECTOR( 2 DOWNTO 0 ) := "000";	--INPUT
-SIGNAL expectL_3, expectR_3 : STD_LOGIC_VECTOR (2 DOWNTO 0);
 
 constant clk_3_period : time := 20 ns; --clock period of fpga de10
 
@@ -42,24 +41,22 @@ BEGIN
 	stim_proc	:	PROCESS
 			  		BEGIN
 					WAIT FOR 0 ns;
-						rst_3_tb <= '0'; left_3_tb <= '0'; right_3_tb <= '0'; interm_3_tb <= '0'; expectL_3 <= "000"; expectR_3 <= "000";
-					WAIT FOR clk_3_period * 20;
-						rst_3_tb <= '0'; left_3_tb <= '1'; right_3_tb <= '0'; interm_3_tb <= '0'; expectL_3 <= "000"; expectR_3 <= "000";
-					WAIT FOR  clk_3_period * 20;
-						rst_3_tb <= '0'; left_3_tb <= '0'; right_3_tb <= '0'; interm_3_tb <= '1'; expectL_3 <= "000"; expectR_3 <= "000";
-					WAIT FOR  clk_3_period * 20;
-						rst_3_tb <= '0'; left_3_tb <= '0'; right_3_tb <= '1'; interm_3_tb <= '0'; expectL_3 <= "000"; expectR_3 <= "000";
-					WAIT FOR  clk_3_period * 20;
-						rst_3_tb <= '0'; left_3_tb <= '0'; right_3_tb <= '0'; interm_3_tb <= '0'; expectL_3 <= "000"; expectR_3 <= "000";
+						rst_3_tb <= '0'; left_3_tb <= '0'; right_3_tb <= '0'; interm_3_tb <= '0';
+					WAIT FOR clk_3_period * 40;
+						rst_3_tb <= '0'; left_3_tb <= '1'; right_3_tb <= '0'; interm_3_tb <= '0';
+					WAIT FOR  clk_3_period * 40;
+						rst_3_tb <= '0'; left_3_tb <= '0'; right_3_tb <= '0'; interm_3_tb <= '1';
+					WAIT FOR  clk_3_period * 40;
+						rst_3_tb <= '0'; left_3_tb <= '0'; right_3_tb <= '1'; interm_3_tb <= '0';
+					WAIT FOR  clk_3_period * 40;
+						rst_3_tb <= '0'; left_3_tb <= '0'; right_3_tb <= '0'; interm_3_tb <= '0';
 					WAIT;
 				END PROCESS;
 						
 	--Monitor
-	txt_out		:	PROCESS( expectL_3, expectR_3 )
+	txt_out		:	PROCESS(lLights_3_tb, rLights_3_tb)
 				VARIABLE str_o	:	LINE;
 			  		BEGIN
-					WRITE( str_o, STRING'( " expectL_3= " 		));	WRITE( str_o, expectL_3 	);
-					WRITE( str_o, STRING'( " expectR_3= " 		));	WRITE( str_o, expectR_3 	);
 					WRITE( str_o, STRING'( " lLights_3_tb= " 		));	WRITE( str_o, lLights_3_tb 	);
 					WRITE( str_o, STRING'( " rLights_3_tb= " 		));	WRITE( str_o, rLights_3_tb 	);
 					ASSERT false REPORT TIME'IMAGE( NOW ) & str_o.ALL
