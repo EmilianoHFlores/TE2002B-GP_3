@@ -16,13 +16,13 @@ type state_type is (s0, s1_0, s1_1, s1_2, s1_3, s2_0, s2_1, s2_2, s2_3, s3_0, s3
 signal present_state_3, next_state_3 : state_type;
 
 -- Define constants
-    constant clk_3_FREQ: integer := 50000000;  -- 50 MHz clock frequency
-    constant DELAY_100ns_3: integer := 5;  -- A delay of 100ns for intermittents (The 2 state cycle lasts 200ns) for intermittent lights
+   constant clk_3_FREQ: integer := 50000000;  -- 50 MHz clock frequency
+   constant DELAY_100ns_3: integer := 5;  -- A delay of 100ns for intermittents (The 2 state cycle lasts 200ns) for intermittent lights
 	constant DELAY_40ns_3: integer := 2;  -- A delay of 40ns for directional lights (the 4 state cycles last 160ns) for right and left lights
 
     -- Define signals
-    signal counter_3: integer range 0 to 50000001 := 0;
-    signal delay_done_3: std_logic := '1';
+   signal counter_3: integer range 0 to 50000001 := 0;
+   signal delay_done_3: std_logic := '1';
 	signal skip_delay_3: std_logic := '0';
 	signal delay_sel_3: std_logic := '0'; -- 0: delay of 100ns | 1: delay of 20ns
 
@@ -40,8 +40,9 @@ begin
 	delay: process (clk_3)
 	begin
 		if (rising_edge(clk_3)) then
-			-- Checks if delay is skipped, or if delay is done (either 100ns or 20ns according to delay_sel_3)
-			if ((counter_3>=DELAY_100ns_3 and delay_sel_3 = '0') or (counter_3>=DELAY_40ns_3 and delay_sel_3 = '1') or skip_delay_3='1') then
+			-- Checks if delay is skipped, or if delay is done (either 100ns or 40ns according to delay_sel_3)
+			-- Delay has 1 subtracted to account for the first counting cycle
+			if ((counter_3>= (DELAY_100ns_3 - 1) and delay_sel_3 = '0') or (counter_3>=(DELAY_40ns_3-1) and delay_sel_3 = '1') or skip_delay_3='1') then
 				counter_3 <= 0;
 				delay_done_3 <= '1';
 			else
