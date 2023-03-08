@@ -35,7 +35,7 @@ ARCHITECTURE behavior of UART_TX_3 is
 	
 	BEGIN
 	
-	UART_BAUD : baudrate_gen generic map (434, 9) port map(clk, not rst, tick);
+	UART_BAUD : baudrate_gen generic map (434, 9) port map(clk, rst, tick);
 	
 	-- Process assignment
 	process(clk)
