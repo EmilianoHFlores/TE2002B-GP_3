@@ -21,7 +21,7 @@ signal clk16_reg, clk16_next:		unsigned(N-1 downto 0) := (others => '0');
 begin
 	process(clk)
 	begin
-		if (reset = '1') then
+		if (reset = '0') then
 			clk16_reg <= (others => '0');
 		elsif (clk'event and clk='1') then
 			clk16_reg <= clk16_next;
