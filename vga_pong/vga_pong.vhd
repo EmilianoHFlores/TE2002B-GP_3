@@ -10,25 +10,41 @@ ENTITY vga_pong IS
 		Va: INTEGER := 2; --Vpulse
 		Vb: INTEGER := 35; --Vpulse+VBP
 		Vc: INTEGER := 515; --Vpulse+VBP+Vactive
-		Vd: INTEGER := 525); --Vpulse+VBP+Vactive+VFP
+		Vd: INTEGER := 525 --Vpulse+VBP+Vactive+VFP
+        ); 
 	PORT (
 		clk: IN STD_LOGIC; --50MHz in our board
 		red_switch, green_switch, blue_switch: IN STD_LOGIC;
 		SW : in STD_LOGIC_VECTOR (7 downto 0); --sWITCHES
-		rst: in STD_LOGIC;
+		rst, start: in STD_LOGIC;
 		pixel_clk: BUFFER STD_LOGIC;
 		Hsync, Vsync: BUFFER STD_LOGIC;
 		R, G, B: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-		nblanck, nsync : OUT STD_LOGIC);
+		nblanck, nsync : OUT STD_LOGIC
+        );
 	END vga_pong;
 
 ARCHITECTURE vga_pong OF vga_pong IS
+
+    COMPONENT random_integer IS 
+        GENERIC (
+            min : INTEGER := 0;
+            max : INTEGER := 100
+        );
+        PORT (clk : IN STD_LOGIC;
+            rand : OUT INTEGER := 0
+        );
+    END COMPONENT random_integer;
 
 -- Define constants
 	constant CLK_FREQ: integer := 50000000;  -- 50 MHz clock frequency
 	constant FPS : INTEGER := 60;
 	constant DELAY: integer := CLK_FREQ/FPS;  -- 1 second delay at 100 MHz
 	constant Jump_line : integer := 1;
+
+    --Screen size
+    constant screen_height : integer := 480;
+    constant screen_width : integer := 640;
 	
 	--For bar width and positions
 	CONSTANT bar_width : integer := 20;
@@ -39,21 +55,32 @@ ARCHITECTURE vga_pong OF vga_pong IS
 
 	--For bar length and predetermined length
 	CONSTANT bar_length : integer := 60;
-	CONSTANT bar_line_orig : integer := 340 - (bar_length/2);
+	CONSTANT bar_line_orig : integer := 340;
 	
 	
-	SIGNAL left_line_counter_sup : INTEGER := bar_line_orig + bar_length;
-	SIGNAL left_line_counter_inf : INTEGER := bar_line_orig;
-	SIGNAL right_line_counter_sup : INTEGER := bar_line_orig + bar_length;
-	SIGNAL right_line_counter_inf : INTEGER := bar_line_orig;
+	SIGNAL left_line_counter_sup : INTEGER := bar_line_orig + (bar_length/2);
+	SIGNAL left_line_counter_inf : INTEGER := bar_line_orig - (bar_length/2);
+	SIGNAL right_line_counter_sup : INTEGER := bar_line_orig + (bar_length/2);
+	SIGNAL right_line_counter_inf : INTEGER := bar_line_orig - (bar_length/2);
 	
-	-- Define signals
+	--For random spawns
+	SIGNAL left_line_random : INTEGER;
+	SIGNAL right_line_random : INTEGER;
+	
+	-- Define signals for the VGA controller
 	SIGNAL counter: integer range 0 to 50000001 := 0;
 	SIGNAL delay_done : STD_LOGIC := '0';
 	SIGNAL Hactive, Vactive, dena: STD_LOGIC;
+	SIGNAL button_pressed: STD_LOGIC := '0';
+
+    --RANDOM SIGNALS
 
 
 BEGIN
+
+    random_left: random_integer generic map (20, 620) port map(clk, left_line_random);
+    random_right: random_integer generic map (20, 620) port map(clk, right_line_random);
+
 -------------------------------------------------------
 --Part 1: CONTROL GENERATOR
 -------------------------------------------------------
@@ -143,31 +170,50 @@ BEGIN
 	
 	END PROCESS;
 		-----------Botones---------------
-		PROCESS(SW, rst)
+	PROCESS(SW, rst)
 		begin
 			
 			IF(rising_edge(delay_done)) THEN
 				--Reset
-				IF (rst = '0') THEN
-					left_line_counter_sup <= bar_line_orig + bar_length;
-					left_line_counter_inf <= bar_line_orig;
-					right_line_counter_sup <= bar_line_orig + bar_length;
-					right_line_counter_inf <= bar_line_orig;
-			
-				--Bar movements
-				ELSIF(SW(0) = '1' and left_line_counter_inf >= 0) THEN
+				
+				-- Button presses
+				IF (button_pressed = '0') THEN
+					IF (start = '0') THEN
+						left_line_counter_sup <= bar_line_orig + bar_length;
+						left_line_counter_inf <= bar_line_orig;
+						right_line_counter_sup <= bar_line_orig + bar_length;
+						right_line_counter_inf <= bar_line_orig;
+						button_pressed <= '1';
+					--Game Start
+					ELSIF (rst = '0') THEN 
+						left_line_counter_sup <= left_line_random;
+						left_line_counter_inf <= left_line_random - bar_length;
+						right_line_counter_sup <= right_line_random;
+						right_line_counter_inf <= right_line_random - bar_length;
+						button_pressed <= '1';
+					END IF;
+				
+				ELSE
+					IF (rst = '1' and start = '1') THEN
+						button_pressed <= '0';
+					END IF;
+				END IF;
+				
+
+				-- Left bar movements
+				IF(SW(0) = '1' and left_line_counter_inf >= 0) THEN
 					left_line_counter_sup <= left_line_counter_sup - Jump_line;
 					left_line_counter_inf <= left_line_counter_inf - Jump_line;
-				END IF;
-				if(SW(1) = '1' and left_line_counter_sup <= 480) THEN
+				ELSIF(SW(1) = '1' and left_line_counter_sup <= 480) THEN
 					left_line_counter_sup <= left_line_counter_sup + Jump_line;
 					left_line_counter_inf <= left_line_counter_inf + Jump_line;
 				END IF;
-					if(SW(2) = '1' and right_line_counter_inf >= 0) THEN
+
+				-- Right bar movements
+				IF(SW(2) = '1' and right_line_counter_inf >= 0) THEN
 					right_line_counter_sup <= right_line_counter_sup - Jump_line;
 					right_line_counter_inf <= right_line_counter_inf - Jump_line;
-				END IF;
-				if(SW(3) = '1' and right_line_counter_sup <= 480) THEN
+				ELSIF(SW(3) = '1' and right_line_counter_sup <= 480) THEN
 					right_line_counter_sup <= right_line_counter_sup + Jump_line;
 					right_line_counter_inf <= right_line_counter_inf + Jump_line;
 				END IF;
