@@ -1,0 +1,82 @@
+if (present_state_3 = s0) then
+			-- interm_3 priority
+				if (interm_3 = '1') then
+					 next_state_3 <= s3_1;
+					 delay_sel_3 <= '0';
+				elsif (left_3 = '1') then
+					 next_state_3 <= s1_1;
+					 delay_sel_3 <= '1';
+				elsif (right_3 = '1') then
+					 next_state_3 <= s2_1;
+					 delay_sel_3 <= '1';
+				else 
+					next_state_3 <= s0;
+					delay_sel_3 <= '0';
+				end if;
+				skip_delay_3 <= '1';
+		
+		-- Do not rerun the process if delay has been skipped (would result in jumping from first step in sequence to second)
+		elsif (skip_delay_3 = '1') then
+			skip_delay_3 <= '0';
+			
+		else
+			if (present_state_3 = s1_0 or present_state_3 = s2_0 or present_state_3 = s3_0) then
+				-- Change of sequence requires previous one to finish
+				skip_delay_3 <= '0';
+				
+				if (delay_done_3 = '1') then 
+					-- intermittent priority
+					if (interm_3 = '1') then
+						 next_state_3 <= s3_1;
+					elsif (left_3 = '1') then
+						 next_state_3 <= s1_1;
+					elsif (right_3 = '1') then
+						 next_state_3 <= s2_1;
+					else 
+						next_state_3 <= s0;
+					end if;
+				end if;
+			
+			elsif (delay_done_3 = '1') then
+				skip_delay_3 <= '0';
+				
+				case present_state_3 is
+					when s0 =>
+						next_state_3 <= s0;
+							
+					when s1_1 =>
+						next_state_3 <= s1_2;
+					
+					when s1_2 =>
+						next_state_3 <= s1_3;
+					
+					when s1_3 =>
+						next_state_3 <= s1_0;
+					
+					when s1_0 =>
+						next_state_3 <= s1_1;
+							 
+					when s2_1 =>
+						next_state_3 <= s2_2;
+					
+					when s2_2 =>
+						next_state_3 <= s2_3;
+					
+					when s2_3 =>
+						next_state_3 <= s2_0;
+					
+					when s2_0 =>
+						next_state_3 <= s2_1;
+						 
+					when s3_1 =>
+						next_state_3 <= s3_0;
+					
+					when s3_0 =>
+						next_state_3 <= s3_1;
+						 
+					when others =>
+						next_state_3 <= s0;
+				
+				end case;
+			end if;
+		end if;
