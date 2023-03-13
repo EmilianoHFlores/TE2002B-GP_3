@@ -33,8 +33,10 @@ ARCHITECTURE vga_pong OF vga_pong IS
     signal counter: integer range 0 to 50000001 := 0;
 SIGNAL delay_done : STD_LOGIC := '0';
 SIGNAL Hactive, Vactive, dena: STD_LOGIC;
-SIGNAL line_counter_sup : INTEGER := 340;
-SIGNAL line_counter_inf : INTEGER := 140;
+SIGNAL left_line_counter_sup : INTEGER := 340;
+SIGNAL left_line_counter_inf : INTEGER := 140;
+SIGNAL right_line_counter_sup : INTEGER := 340;
+SIGNAL right_line_counter_inf : INTEGER := 140;
 SIGNAL column_counter_sup : INTEGER := 420;
 SIGNAL column_counter_inf : INTEGER := 220;
 
@@ -81,11 +83,16 @@ BEGIN
 	-------------------------------------------------------
 	--Part 2: IMAGE GENERATOR
 	-------------------------------------------------------
-	PROCESS (Hsync, Vsync, Vactive, dena, red_switch, green_switch, blue_switch)
-	VARIABLE line_counter: INTEGER RANGE 0 TO Vc;
+	IMAGE: PROCESS (Hsync, Vsync, Vactive, dena, red_switch, green_switch, blue_switch)
+	VARIABLE left_line_counter: INTEGER RANGE 0 TO Vc;
+    VARIABLE line_counter: INTEGER RANGE 0 TO Vc;
 	VARIABLE column_counter: INTEGER RANGE 0 TO HC;
 	VARIABLE line_counter_cent : INTEGER RANGE 0 TO Vc; ----PENDIENTE
 	VARIABLE column_counter_cent : INTEGER RANGE 0 TO Hc;
+    CONSTANT left_bar_col_inf : INTEGER := 20;
+    CONSTANT left_bar_col_sup : INTEGER := 40;
+    CONSTANT right_bar_col_inf : INTEGER := 620;
+    CONSTANT right_bar_col_sup : INTEGER := 640;
 	
 	
 	
@@ -107,10 +114,16 @@ BEGIN
 		END IF;
 		
 		IF (dena='1') THEN
-			IF ((line_counter<=line_counter_sup and line_counter>= line_counter_inf) and (column_counter>=column_counter_inf and column_counter<=column_counter_sup)) THEN
+            --lEFT BAR
+			IF ((line_counter<=left_line_counter_sup and line_counter>= left_line_counter_inf) and (column_counter>=left_bar_col_inf and column_counter<=left_bar_col_sup)) THEN
 				R <= (OTHERS => '1');
 				G <= (OTHERS => '0');
 				B <= (OTHERS => '0');
+			--RIGHT BAR
+			ELSIF((line_counter<=right_line_counter_sup and line_counter>= right_line_counter_inf) and (column_counter>=right_bar_col_inf and column_counter<=right_bar_col_sup)) THEN
+				 R <= (OTHERS => '0');
+				 G <= (OTHERS => '0');
+				 B <= (OTHERS => '1');
 			ELSE
 				R <= (OTHERS => '1');
 				G <= (OTHERS => '1');
@@ -129,21 +142,21 @@ BEGIN
 		PROCESS(SW)
 		begin
 		IF(rising_edge(delay_done)) THEN
-			if(SW(0) = '1' and line_counter_inf >= 0) THEN
-				line_counter_sup <= line_counter_sup - Jump_line;
-				line_counter_inf <= line_counter_inf - Jump_line;
+			if(SW(0) = '1' and left_line_counter_inf >= 0) THEN
+				left_line_counter_sup <= left_line_counter_sup - Jump_line;
+				left_line_counter_inf <= left_line_counter_inf - Jump_line;
 			END IF;
-			if(SW(1) = '1' and line_counter_sup <= 480) THEN
-				line_counter_sup <= line_counter_sup + Jump_line;
-				line_counter_inf <= line_counter_inf + Jump_line;
+			if(SW(1) = '1' and left_line_counter_sup <= 480) THEN
+				left_line_counter_sup <= left_line_counter_sup + Jump_line;
+				left_line_counter_inf <= left_line_counter_inf + Jump_line;
 			END IF;
-			if(SW(2) = '1' and column_counter_inf >= 0) THEN
-				column_counter_sup <= column_counter_sup - Jump_line;
-				column_counter_inf <= column_counter_inf - Jump_line;
+            if(SW(2) = '1' and right_line_counter_inf >= 0) THEN
+				right_line_counter_sup <= right_line_counter_sup - Jump_line;
+				right_line_counter_inf <= right_line_counter_inf - Jump_line;
 			END IF;
-			if(SW(3) = '1' and column_counter_sup <= 640) THEN
-				column_counter_sup <= column_counter_sup + Jump_line;
-				column_counter_inf <= column_counter_inf + Jump_line;
+			if(SW(3) = '1' and right_line_counter_sup <= 480) THEN
+            right_line_counter_sup <= right_line_counter_sup + Jump_line;
+				right_line_counter_inf <= right_line_counter_inf + Jump_line;
 			END IF;
 		END IF;
 		END PROCESS;
