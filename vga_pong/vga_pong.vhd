@@ -29,7 +29,8 @@ ARCHITECTURE vga_pong OF vga_pong IS
     COMPONENT random_integer IS 
         GENERIC (
             min : INTEGER := 0;
-            max : INTEGER := 100
+            max : INTEGER := 100;
+				seed: INTEGER := 1
         );
         PORT (clk : IN STD_LOGIC;
             rand : OUT INTEGER := 0
@@ -78,8 +79,8 @@ ARCHITECTURE vga_pong OF vga_pong IS
 
 BEGIN
 
-    random_left: random_integer generic map (20, 620) port map(clk, left_line_random);
-    random_right: random_integer generic map (20, 620) port map(clk, right_line_random);
+    random_left: random_integer generic map (20, 460, 5) port map(clk, left_line_random);
+    random_right: random_integer generic map (20, 460, 1) port map(clk, right_line_random);
 
 -------------------------------------------------------
 --Part 1: CONTROL GENERATOR
