@@ -1,5 +1,6 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
+USE ieee.numeric_std.ALL;
 
 ENTITY vga_pong IS
 	GENERIC (
@@ -15,7 +16,7 @@ ENTITY vga_pong IS
 	PORT (
 		clk: IN STD_LOGIC; --50MHz in our board
 		red_switch, green_switch, blue_switch: IN STD_LOGIC;
-		SW : in STD_LOGIC_VECTOR (7 downto 0); --sWITCHES
+		SW : in STD_LOGIC_VECTOR (9 downto 0); --sWITCHES
 		rst, start: in STD_LOGIC;
 		pixel_clk: BUFFER STD_LOGIC;
 		Hsync, Vsync: BUFFER STD_LOGIC;
@@ -41,21 +42,20 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	constant CLK_FREQ: integer := 50000000;  -- 50 MHz clock frequency
 	constant FPS : INTEGER := 60;
 	constant DELAY: integer := CLK_FREQ/FPS;  -- 1 second delay at 100 MHz
-	constant Jump_line : integer := 1;
 
     --Screen size
     constant screen_height : integer := 480;
     constant screen_width : integer := 640;
 	
 	--For bar width and positions
-	CONSTANT bar_width : integer := 20;
+	CONSTANT bar_width : integer := 10;
 	CONSTANT left_bar_col_inf : INTEGER := 10;
 	CONSTANT left_bar_col_sup : INTEGER := left_bar_col_inf + bar_width;
 	CONSTANT right_bar_col_inf : INTEGER := 610;
 	CONSTANT right_bar_col_sup : INTEGER := right_bar_col_inf + bar_width;
 
 	--For bar length and predetermined length
-	CONSTANT bar_length : integer := 60;
+	CONSTANT bar_length : integer := 80;
 	CONSTANT bar_line_orig : integer := 340;
 	
 	
@@ -75,6 +75,10 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	SIGNAL button_pressed: STD_LOGIC := '0';
 
     --RANDOM SIGNALS
+
+
+	--SPEED CONTROLLER
+	SIGNAL Jump_line : integer := 1;
 
 
 BEGIN
@@ -180,10 +184,10 @@ BEGIN
 				-- Button presses
 				IF (button_pressed = '0') THEN
 					IF (start = '0') THEN
-						left_line_counter_sup <= bar_line_orig + bar_length;
-						left_line_counter_inf <= bar_line_orig;
-						right_line_counter_sup <= bar_line_orig + bar_length;
-						right_line_counter_inf <= bar_line_orig;
+						left_line_counter_sup <= bar_line_orig + (bar_length/2);
+						left_line_counter_inf <= bar_line_orig - (bar_length/2);
+						right_line_counter_sup <= bar_line_orig + (bar_length/2);
+						right_line_counter_inf <= bar_line_orig - (bar_length/2);
 						button_pressed <= '1';
 					--Game Start
 					ELSIF (rst = '0') THEN 
@@ -235,5 +239,13 @@ BEGIN
 			end if;
 	end process;
 
-		
+	speed_control: PROCESS (clk, SW) is
+		VARIABLE switches : std_logic_vector(3 downto 0);
+		begin
+			if (rising_edge(clk)) then
+				switches := SW(9 downto 6);
+				Jump_line <= to_integer(unsigned(switches));
+			end if;
+	end process;
+
 END vga_pong;
