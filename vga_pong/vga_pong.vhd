@@ -193,30 +193,29 @@ BEGIN
 						right_line_counter_inf <= right_line_random - bar_length;
 						button_pressed <= '1';
 					END IF;
-				
 				ELSE
 					IF (rst = '1' and start = '1') THEN
 						button_pressed <= '0';
 					END IF;
-				END IF;
-				
 
-				-- Left bar movements
-				IF(SW(0) = '1' and left_line_counter_inf >= 0) THEN
-					left_line_counter_sup <= left_line_counter_sup - Jump_line;
-					left_line_counter_inf <= left_line_counter_inf - Jump_line;
-				ELSIF(SW(1) = '1' and left_line_counter_sup <= 480) THEN
-					left_line_counter_sup <= left_line_counter_sup + Jump_line;
-					left_line_counter_inf <= left_line_counter_inf + Jump_line;
-				END IF;
+						-- Left bar movements
+					IF(SW(0) = '1' and left_line_counter_inf >= 0) THEN
+						left_line_counter_sup <= left_line_counter_sup - Jump_line;
+						left_line_counter_inf <= left_line_counter_inf - Jump_line;
+					ELSIF(SW(1) = '1' and left_line_counter_sup <= 480) THEN
+						left_line_counter_sup <= left_line_counter_sup + Jump_line;
+						left_line_counter_inf <= left_line_counter_inf + Jump_line;
+					END IF;
 
-				-- Right bar movements
-				IF(SW(2) = '1' and right_line_counter_inf >= 0) THEN
-					right_line_counter_sup <= right_line_counter_sup - Jump_line;
-					right_line_counter_inf <= right_line_counter_inf - Jump_line;
-				ELSIF(SW(3) = '1' and right_line_counter_sup <= 480) THEN
-					right_line_counter_sup <= right_line_counter_sup + Jump_line;
-					right_line_counter_inf <= right_line_counter_inf + Jump_line;
+					-- Right bar movements
+					IF(SW(2) = '1' and right_line_counter_inf >= 0) THEN
+						right_line_counter_sup <= right_line_counter_sup - Jump_line;
+						right_line_counter_inf <= right_line_counter_inf - Jump_line;
+					ELSIF(SW(3) = '1' and right_line_counter_sup <= 480) THEN
+						right_line_counter_sup <= right_line_counter_sup + Jump_line;
+						right_line_counter_inf <= right_line_counter_inf + Jump_line;
+					END IF;
+
 				END IF;
 				
 			END IF;
