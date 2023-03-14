@@ -56,7 +56,7 @@ ARCHITECTURE vga_pong OF vga_pong IS
 
 	--For bar length and predetermined length
 	CONSTANT bar_length : integer := 80;
-	CONSTANT bar_line_orig : integer := 340;
+	CONSTANT bar_line_orig : integer := 240;
 	
 	
 	SIGNAL left_line_counter_sup : INTEGER := bar_line_orig + (bar_length/2);
@@ -177,7 +177,7 @@ BEGIN
 				 G <= (OTHERS => '0');
 				 B <= (OTHERS => '1');
 			--BALL
-			ELSIF((line_counter<=ball_line_sup and line_counter>= ball_line_inf) and (column_counter>=ball_col_sup and column_counter<=ball_col_inf)) THEN
+			ELSIF((line_counter<=ball_line_sup and line_counter>= ball_line_inf) and (column_counter<=ball_col_sup and column_counter>=ball_col_inf)) THEN
 				IF (ball_state = red) THEN
 					R <= (OTHERS => '1');
 					G <= (OTHERS => '0');
@@ -224,7 +224,7 @@ BEGIN
 						ball_line_inf <= ball_line_orig - (ball_size/2);
 						ball_col_sup <= ball_col_orig + (ball_size/2);
 						ball_col_inf <= ball_col_orig - (ball_size/2);
-						IF (ball_state_random = 1) THEN
+						IF (ball_state_random = 0) THEN
 							ball_state <= red;
 						ELSE
 							ball_state <= blue;
@@ -240,7 +240,7 @@ BEGIN
 						ball_line_inf <= ball_line_random - (ball_size/2);
 						ball_col_sup <= ball_col_orig + (ball_size/2);
 						ball_col_inf <= ball_col_orig - (ball_size/2);
-						IF (ball_state_random = 1) THEN
+						IF (ball_state_random = 0) THEN
 							ball_state <= red;
 						ELSE
 							ball_state <= blue;
