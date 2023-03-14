@@ -186,9 +186,9 @@ BEGIN
 					G <= (OTHERS => '0');
 					B <= (OTHERS => '1');
 				ELSE
-					R <= (OTHERS => '1');
+					R <= (OTHERS => '0');
 					G <= (OTHERS => '1');
-					B <= (OTHERS => '1');
+					B <= (OTHERS => '0');
 				END IF;
 			ELSE
 				R <= (OTHERS => '1');
