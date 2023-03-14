@@ -26,7 +26,18 @@ ENTITY vga_pong IS
 	END vga_pong;
 
 ARCHITECTURE vga_pong OF vga_pong IS
-
+	--Accelerometer instance--
+	COMPONENT accelerometer IS
+		PORT(	CLOCK_50				: IN		std_logic;
+			KEY					: IN		std_logic_vector(1 DOWNTO 0);
+			GSENSOR_INT			: IN		std_logic_vector(1 DOWNTO 0);
+			GSENSOR_SDI			: INOUT	std_logic;
+			GSENSOR_SDO			: INOUT	std_logic;
+			GSENSOR_CS_N		: OUT		std_logic;
+			GSENSOR_SCLK		: OUT		std_logic;
+			LEDR					: OUT		std_logic_vector(9 DOWNTO 0)
+	);
+	END COMPONENT accelerometer;
     COMPONENT random_integer IS 
         GENERIC (
             min : INTEGER := 0;
