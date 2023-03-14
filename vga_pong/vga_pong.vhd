@@ -59,22 +59,35 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	CONSTANT bar_line_orig : integer := 340;
 	
 	
-	SIGNAL left_line_counter_sup : INTEGER := bar_line_orig + (bar_length/2);
-	SIGNAL left_line_counter_inf : INTEGER := bar_line_orig - (bar_length/2);
-	SIGNAL right_line_counter_sup : INTEGER := bar_line_orig + (bar_length/2);
-	SIGNAL right_line_counter_inf : INTEGER := bar_line_orig - (bar_length/2);
+	SIGNAL left_line_counter_sup : INTEGER := bar_line_orig - (bar_length/2);
+	SIGNAL left_line_counter_inf : INTEGER := bar_line_orig + (bar_length/2);
+	SIGNAL right_line_counter_sup : INTEGER := bar_line_orig - (bar_length/2);
+	SIGNAL right_line_counter_inf : INTEGER := bar_line_orig + (bar_length/2);
+
+	--For ball
+	CONSTANT ball_size : integer := 10;
+	CONSTANT ball_line_orig : integer := 240;
+	CONSTANT ball_col_orig : integer := 320;
+	Signal ball_line_counter_sup : integer := ball_line_orig - (ball_size/2);
+	Signal ball_line_counter_inf : integer := ball_line_orig + (ball_size/2);
+	Signal ball_col_counter_sup : integer := ball_col_orig - (ball_size/2);
+	Signal ball_col_counter_inf : integer := ball_col_orig + (ball_size/2);
 	
 	--For random spawns
 	SIGNAL left_line_random : INTEGER;
 	SIGNAL right_line_random : INTEGER;
+	SIGNAL ball_line_random : INTEGER;
+	SIGNAL ball_state_random : INTEGER;
 	
 	-- Define signals for the VGA controller
 	SIGNAL counter: integer range 0 to 50000001 := 0;
 	SIGNAL delay_done : STD_LOGIC := '0';
 	SIGNAL Hactive, Vactive, dena: STD_LOGIC;
 	SIGNAL button_pressed: STD_LOGIC := '0';
-
-    --RANDOM SIGNALS
+	
+	-- Ball states : idle, red, blue
+	type state_type is (idle, red, blue);
+	signal ball_state : state_type;
 
 
 	--SPEED CONTROLLER
@@ -83,8 +96,10 @@ ARCHITECTURE vga_pong OF vga_pong IS
 
 BEGIN
 
-    random_left: random_integer generic map (20, 460, 5) port map(clk, left_line_random);
-    random_right: random_integer generic map (20, 460, 1) port map(clk, right_line_random);
+   random_left: random_integer generic map (20, 460, 5) port map(clk, left_line_random);
+   random_right: random_integer generic map (20, 460, 1) port map(clk, right_line_random);
+	random_ball: random_integer generic map (10, 470, 2) port map(clk, ball_line_random);
+	random_state: random_integer generic map (0, 2, 1) port map(clk, ball_state_random);
 
 -------------------------------------------------------
 --Part 1: CONTROL GENERATOR
@@ -160,6 +175,21 @@ BEGIN
 				 R <= (OTHERS => '0');
 				 G <= (OTHERS => '0');
 				 B <= (OTHERS => '1');
+			--BALL
+			ELSIF((line_counter<=ball_line_counter_sup and line_counter>= ball_line_counter_inf) and (column_counter>=ball_col_counter_sup and column_counter<=ball_col_counter_inf)) THEN
+				IF (ball_state = red) THEN
+					R <= (OTHERS => '1');
+					G <= (OTHERS => '0');
+					B <= (OTHERS => '0');
+				ELSIF (ball_state = blue) THEN
+					R <= (OTHERS => '0');
+					G <= (OTHERS => '0');
+					B <= (OTHERS => '1');
+				ELSE
+					R <= (OTHERS => '1');
+					G <= (OTHERS => '1');
+					B <= (OTHERS => '1');
+				END IF;
 			ELSE
 				R <= (OTHERS => '1');
 				G <= (OTHERS => '1');
@@ -174,27 +204,45 @@ BEGIN
 		END IF;
 	
 	END PROCESS;
+	
 		-----------Botones---------------
 	PROCESS(SW, rst)
 		begin
 			
-			IF(rising_edge(delay_done)) THEN
-				--Reset
-				
+			IF(rising_edge(delay_done)) THEN				
 				-- Button presses
 				IF (button_pressed = '0') THEN
+					--Reset
 					IF (start = '0') THEN
-						left_line_counter_sup <= bar_line_orig + (bar_length/2);
-						left_line_counter_inf <= bar_line_orig - (bar_length/2);
-						right_line_counter_sup <= bar_line_orig + (bar_length/2);
-						right_line_counter_inf <= bar_line_orig - (bar_length/2);
+						left_line_counter_sup <= bar_line_orig - (bar_length/2);
+						left_line_counter_inf <= bar_line_orig + (bar_length/2);
+						right_line_counter_sup <= bar_line_orig - (bar_length/2);
+						right_line_counter_inf <= bar_line_orig + (bar_length/2);
+						ball_line_counter_sup <= ball_line_orig - (ball_size/2);
+						ball_line_counter_inf <= ball_line_orig + (ball_size/2);
+						ball_col_counter_sup <= ball_col_orig - (ball_size/2);
+						ball_col_counter_inf <= ball_col_orig + (ball_size/2);
+						IF (ball_state_random = 1) THEN
+							ball_state <= red;
+						ELSE
+							ball_state <= blue;
+						END IF;
 						button_pressed <= '1';
 					--Game Start
 					ELSIF (rst = '0') THEN 
-						left_line_counter_sup <= left_line_random;
-						left_line_counter_inf <= left_line_random - bar_length;
-						right_line_counter_sup <= right_line_random;
-						right_line_counter_inf <= right_line_random - bar_length;
+						left_line_counter_sup <= left_line_random - (bar_length/2);
+						left_line_counter_inf <= left_line_random + (bar_length/2);
+						right_line_counter_sup <= right_line_random - (bar_length/2);
+						right_line_counter_inf <= right_line_random + (bar_length/2);
+						ball_line_counter_sup <= ball_line_random - (ball_size/2);
+						ball_line_counter_inf <= ball_line_random + (ball_size/2);
+						ball_col_counter_sup <= ball_col_orig - (ball_size/2);
+						ball_col_counter_inf <= ball_col_orig + (ball_size/2);
+						IF (ball_state_random = 1) THEN
+							ball_state <= red;
+						ELSE
+							ball_state <= blue;
+						END IF;
 						button_pressed <= '1';
 					else
 							-- Left bar movements
@@ -225,7 +273,6 @@ BEGIN
 			END IF;
 		END PROCESS;
 		
-			
 		delay_S: process (clk)
 		begin
 			if (rising_edge(clk)) then
@@ -244,7 +291,7 @@ BEGIN
 		begin
 			if (rising_edge(clk)) then
 				switches := SW(9 downto 6);
-				Jump_line <= to_integer(unsigned(switches));
+				Jump_line <= to_integer(unsigned(switches)) + 1;
 			end if;
 	end process;
 
