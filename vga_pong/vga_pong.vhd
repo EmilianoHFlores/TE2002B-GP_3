@@ -42,7 +42,7 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	 --Accelerometer SIGNAL
 	SIGNAL: CLK_ACC, GSENSOR_CS_N_ACC, GSENSOR_SCLK_ACC,GSENSOR_SDI_ACC, GSENSOR_SDO_ACC : STD_LOGIC;
 	SIGNAL: KEY_ACC, GSENSOR_INT_ACC : std_logic_vector(1 DOWNTO 0);
-	SIGNAL: LEDR_ACC : std_logic_vector(9 downto 0);
+	SIGNAL: LEDR_ACC,LEDR_I_ACC : std_logic_vector(7 downto 0);
 
     COMPONENT random_integer IS 
         GENERIC (
