@@ -42,6 +42,7 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	 --Accelerometer SIGNAL
 	SIGNAL: CLK_ACC, GSENSOR_CS_N_ACC, GSENSOR_SCLK_ACC,GSENSOR_SDI_ACC, GSENSOR_SDO_ACC : STD_LOGIC;
 	SIGNAL: KEY_ACC, GSENSOR_INT_ACC : std_logic_vector(1 DOWNTO 0);
+	SIGNAL: LEDR_ACC : std_logic_vector(9 downto 0);
 
     COMPONENT random_integer IS 
         GENERIC (
@@ -114,7 +115,8 @@ ARCHITECTURE vga_pong OF vga_pong IS
 BEGIN
 
 	--Accelerometer--
-	
+	Accelerometer_pong : Accelerometer
+	port map(CLK_ACC, GSENSOR_INT_ACC, )
 
    random_left: random_integer generic map (20, 460, 5) port map(clk, left_line_random);
    random_right: random_integer generic map (20, 460, 1) port map(clk, right_line_random);
