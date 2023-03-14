@@ -68,10 +68,10 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	CONSTANT ball_size : integer := 10;
 	CONSTANT ball_line_orig : integer := 240;
 	CONSTANT ball_col_orig : integer := 320;
-	Signal ball_line_counter_sup : integer := ball_line_orig - (ball_size/2);
-	Signal ball_line_counter_inf : integer := ball_line_orig + (ball_size/2);
-	Signal ball_col_counter_sup : integer := ball_col_orig - (ball_size/2);
-	Signal ball_col_counter_inf : integer := ball_col_orig + (ball_size/2);
+	Signal ball_line_sup : integer := ball_line_orig - (ball_size/2);
+	Signal ball_line_inf : integer := ball_line_orig + (ball_size/2);
+	Signal ball_col_sup : integer := ball_col_orig - (ball_size/2);
+	Signal ball_col_inf : integer := ball_col_orig + (ball_size/2);
 	
 	--For random spawns
 	SIGNAL left_line_random : INTEGER;
@@ -175,21 +175,7 @@ BEGIN
 				 R <= (OTHERS => '0');
 				 G <= (OTHERS => '0');
 				 B <= (OTHERS => '1');
-			--BALL
-			ELSIF((line_counter<=ball_line_counter_sup and line_counter>= ball_line_counter_inf) and (column_counter>=ball_col_counter_sup and column_counter<=ball_col_counter_inf)) THEN
-				IF (ball_state = red) THEN
-					R <= (OTHERS => '1');
-					G <= (OTHERS => '0');
-					B <= (OTHERS => '0');
-				ELSIF (ball_state = blue) THEN
-					R <= (OTHERS => '0');
-					G <= (OTHERS => '0');
-					B <= (OTHERS => '1');
-				ELSE
-					R <= (OTHERS => '0');
-					G <= (OTHERS => '1');
-					B <= (OTHERS => '0');
-				END IF;
+			
 			ELSE
 				R <= (OTHERS => '1');
 				G <= (OTHERS => '1');
@@ -218,10 +204,10 @@ BEGIN
 						left_line_counter_inf <= bar_line_orig + (bar_length/2);
 						right_line_counter_sup <= bar_line_orig - (bar_length/2);
 						right_line_counter_inf <= bar_line_orig + (bar_length/2);
-						ball_line_counter_sup <= ball_line_orig - (ball_size/2);
-						ball_line_counter_inf <= ball_line_orig + (ball_size/2);
-						ball_col_counter_sup <= ball_col_orig - (ball_size/2);
-						ball_col_counter_inf <= ball_col_orig + (ball_size/2);
+						ball_line_sup <= ball_line_orig - (ball_size/2);
+						ball_line_inf <= ball_line_orig + (ball_size/2);
+						ball_col_sup <= ball_col_orig - (ball_size/2);
+						ball_col_inf <= ball_col_orig + (ball_size/2);
 						IF (ball_state_random = 1) THEN
 							ball_state <= red;
 						ELSE
@@ -234,10 +220,10 @@ BEGIN
 						left_line_counter_inf <= left_line_random + (bar_length/2);
 						right_line_counter_sup <= right_line_random - (bar_length/2);
 						right_line_counter_inf <= right_line_random + (bar_length/2);
-						ball_line_counter_sup <= ball_line_random - (ball_size/2);
-						ball_line_counter_inf <= ball_line_random + (ball_size/2);
-						ball_col_counter_sup <= ball_col_orig - (ball_size/2);
-						ball_col_counter_inf <= ball_col_orig + (ball_size/2);
+						ball_line_sup <= ball_line_random - (ball_size/2);
+						ball_line_inf <= ball_line_random + (ball_size/2);
+						ball_col_sup <= ball_col_orig - (ball_size/2);
+						ball_col_inf <= ball_col_orig + (ball_size/2);
 						IF (ball_state_random = 1) THEN
 							ball_state <= red;
 						ELSE
