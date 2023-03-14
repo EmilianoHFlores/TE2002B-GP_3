@@ -79,6 +79,7 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	SIGNAL right_line_random : INTEGER;
 	SIGNAL ball_line_random : INTEGER;
 	SIGNAL ball_state_random : INTEGER;
+	SIGNAL ball_direction_random : INTEGER;
 	
 	-- Define signals for the VGA controller
 	SIGNAL counter: integer range 0 to 50000001 := 0;
@@ -88,7 +89,9 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	
 	-- Ball states : idle, red, blue
 	type state_type is (idle, red, blue);
+	type direction_type is (up, down);
 	signal ball_state : state_type := idle;
+	signal ball_direction : direction_type := up;
 
 
 	--SPEED CONTROLLER
@@ -97,10 +100,11 @@ ARCHITECTURE vga_pong OF vga_pong IS
 
 BEGIN
 
-   random_left: random_integer generic map (20, 460, 5) port map(clk, left_line_random);
-   random_right: random_integer generic map (20, 460, 1) port map(clk, right_line_random);
+	random_left: random_integer generic map (20, 460, 5) port map(clk, left_line_random);
+	random_right: random_integer generic map (20, 460, 1) port map(clk, right_line_random);
 	random_ball: random_integer generic map (10, 470, 2) port map(clk, ball_line_random);
 	random_state: random_integer generic map (0, 100, 1) port map(clk, ball_state_random);
+	random_direction:  random_integer generic map (0, 100, 5) port map(clk, ball_direction_random);
 
 -------------------------------------------------------
 --Part 1: CONTROL GENERATOR
@@ -216,6 +220,8 @@ BEGIN
 					--Reset
 					IF (start = '0') THEN
 						button_pressed <= '1';
+
+						-- Back to default position
 						left_line_counter_sup <= bar_line_orig + (bar_length/2);
 						left_line_counter_inf <= bar_line_orig - (bar_length/2);
 						right_line_counter_sup <= bar_line_orig + (bar_length/2);
@@ -224,14 +230,24 @@ BEGIN
 						ball_line_inf <= ball_line_orig - (ball_size/2);
 						ball_col_sup <= ball_col_orig + (ball_size/2);
 						ball_col_inf <= ball_col_orig - (ball_size/2);
+
+						-- Defining random ball state (horizontal direction)
 						IF (ball_state_random < 50) THEN
 							ball_state <= red;
 						ELSE
 							ball_state <= blue;
 						END IF;
+
+						-- Defining random ball direction (vertical direction)
+						IF (ball_direction_random < 50) THEN
+							ball_direction <= up;
+						ELSE
+							ball_direction <= down;
+						END IF;
 					--Game Start
 					ELSIF (rst = '0') THEN 
 						button_pressed <= '1';
+						--Random positions
 						left_line_counter_sup <= left_line_random + (bar_length/2);
 						left_line_counter_inf <= left_line_random - (bar_length/2);
 						right_line_counter_sup <= right_line_random + (bar_length/2);
@@ -240,12 +256,22 @@ BEGIN
 						ball_line_inf <= ball_line_random - (ball_size/2);
 						ball_col_sup <= ball_col_orig + (ball_size/2);
 						ball_col_inf <= ball_col_orig - (ball_size/2);
+
+						-- Defining random ball state (horizontal direction)
 						IF (ball_state_random < 50) THEN
 							ball_state <= red;
 						ELSE
 							ball_state <= blue;
 						END IF;
-					else
+
+						-- Defining random ball direction (vertical direction)
+						IF (ball_direction_random < 50) THEN
+							ball_direction <= up;
+						ELSE
+							ball_direction <= down;
+						END IF;
+
+					ELSE
 							-- Left bar movements
 						IF(SW(0) = '1' and left_line_counter_inf >= 0) THEN
 							left_line_counter_sup <= left_line_counter_sup - Jump_line;
@@ -262,6 +288,59 @@ BEGIN
 						ELSIF(SW(3) = '1' and right_line_counter_sup <= 480) THEN
 							right_line_counter_sup <= right_line_counter_sup + Jump_line;
 							right_line_counter_inf <= right_line_counter_inf + Jump_line;
+						END IF;
+
+						IF (ball_state = idle) THEN
+						--Send to origin (painted green)
+							ball_line_sup <= ball_line_orig + (ball_size/2);
+							ball_line_inf <= ball_line_orig - (ball_size/2);
+							ball_col_sup <= ball_col_orig + (ball_size/2);
+							ball_col_inf <= ball_col_orig - (ball_size/2);
+						ELSE
+							-- Ball movements
+							-- Horizontal movements
+							IF (ball_state = red) THEN
+								ball_col_sup <= ball_col_sup + Jump_line;
+								ball_col_inf <= ball_col_inf + Jump_line;
+							ELSE
+								ball_col_sup <= ball_col_sup - Jump_line;
+								ball_col_inf <= ball_col_inf - Jump_line;
+							END IF;
+
+							-- Vertical movements
+							IF (ball_direction = up) THEN
+								ball_line_sup <= ball_line_sup - Jump_line;
+								ball_line_inf <= ball_line_inf - Jump_line;
+							ELSE
+								ball_line_sup <= ball_line_sup + Jump_line;
+								ball_line_inf <= ball_line_inf + Jump_line;
+							END IF;
+
+							--Bouncing vertical
+							IF (ball_line_sup >= 480) THEN
+								ball_direction <= up;
+							ELSIF (ball_line_inf <= 0) THEN
+								ball_direction <= down;
+							END IF;
+
+							--Bouncing horizontal
+							--bounced on blue bar (right)
+							IF (ball_col_sup >= right_bar_col_inf) THEN
+								IF (ball_line_sup >= right_line_counter_inf and ball_line_inf <= right_line_counter_sup) THEN
+									ball_state <= blue;
+								else
+									--point for red
+									ball_state <= idle;
+								end if;
+							--bounced on red bar
+							ELSIF (ball_col_inf <= left_bar_col_sup) THEN
+								IF (ball_line_sup >= left_line_counter_inf and ball_line_inf <= left_line_counter_sup) THEN
+									ball_state <= red;
+								else
+									--point for red
+									ball_state <= idle;
+								end if;
+							END IF;
 						END IF;
 					END IF;
 					
