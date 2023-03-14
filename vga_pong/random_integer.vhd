@@ -5,7 +5,7 @@ ENTITY random_integer IS
     GENERIC (
         min : INTEGER := 0;
         max : INTEGER := 100;
-		  seed : INTEGER := 1
+		seed : INTEGER := 1
     );
     PORT (clk : IN STD_LOGIC;
           rand : OUT INTEGER
