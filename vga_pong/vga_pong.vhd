@@ -65,9 +65,10 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	SIGNAL right_line_counter_inf : INTEGER := bar_line_orig - (bar_length/2);
 
 	--For ball
-	CONSTANT ball_size : integer := 10;
+	CONSTANT ball_size : integer := 40;
 	CONSTANT ball_line_orig : integer := 240;
 	CONSTANT ball_col_orig : integer := 320;
+
 	Signal ball_line_sup : integer := ball_line_orig + (ball_size/2);
 	Signal ball_line_inf : integer := ball_line_orig - (ball_size/2);
 	Signal ball_col_sup : integer := ball_col_orig + (ball_size/2);
@@ -230,7 +231,6 @@ BEGIN
 						END IF;
 					--Game Start
 					ELSIF (rst = '0') THEN 
-					
 						button_pressed <= '1';
 						left_line_counter_sup <= left_line_random + (bar_length/2);
 						left_line_counter_inf <= left_line_random - (bar_length/2);
