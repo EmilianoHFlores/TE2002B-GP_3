@@ -59,19 +59,19 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	CONSTANT bar_line_orig : integer := 340;
 	
 	
-	SIGNAL left_line_counter_sup : INTEGER := bar_line_orig - (bar_length/2);
-	SIGNAL left_line_counter_inf : INTEGER := bar_line_orig + (bar_length/2);
-	SIGNAL right_line_counter_sup : INTEGER := bar_line_orig - (bar_length/2);
-	SIGNAL right_line_counter_inf : INTEGER := bar_line_orig + (bar_length/2);
+	SIGNAL left_line_counter_sup : INTEGER := bar_line_orig + (bar_length/2);
+	SIGNAL left_line_counter_inf : INTEGER := bar_line_orig - (bar_length/2);
+	SIGNAL right_line_counter_sup : INTEGER := bar_line_orig + (bar_length/2);
+	SIGNAL right_line_counter_inf : INTEGER := bar_line_orig - (bar_length/2);
 
 	--For ball
 	CONSTANT ball_size : integer := 10;
 	CONSTANT ball_line_orig : integer := 240;
 	CONSTANT ball_col_orig : integer := 320;
-	Signal ball_line_sup : integer := ball_line_orig - (ball_size/2);
-	Signal ball_line_inf : integer := ball_line_orig + (ball_size/2);
-	Signal ball_col_sup : integer := ball_col_orig - (ball_size/2);
-	Signal ball_col_inf : integer := ball_col_orig + (ball_size/2);
+	Signal ball_line_sup : integer := ball_line_orig + (ball_size/2);
+	Signal ball_line_inf : integer := ball_line_orig - (ball_size/2);
+	Signal ball_col_sup : integer := ball_col_orig + (ball_size/2);
+	Signal ball_col_inf : integer := ball_col_orig - (ball_size/2);
 	
 	--For random spawns
 	SIGNAL left_line_random : INTEGER;
@@ -87,7 +87,7 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	
 	-- Ball states : idle, red, blue
 	type state_type is (idle, red, blue);
-	signal ball_state : state_type;
+	signal ball_state : state_type := idle;
 
 
 	--SPEED CONTROLLER
@@ -175,7 +175,21 @@ BEGIN
 				 R <= (OTHERS => '0');
 				 G <= (OTHERS => '0');
 				 B <= (OTHERS => '1');
-			
+			--BALL
+			ELSIF((line_counter<=ball_line_sup and line_counter>= ball_line_inf) and (column_counter>=ball_col_sup and column_counter<=ball_col_inf)) THEN
+				IF (ball_state = red) THEN
+					R <= (OTHERS => '1');
+					G <= (OTHERS => '0');
+					B <= (OTHERS => '0');
+				ELSIF (ball_state = blue) THEN
+					R <= (OTHERS => '0');
+					G <= (OTHERS => '0');
+					B <= (OTHERS => '1');
+				ELSE
+					R <= (OTHERS => '0');
+					G <= (OTHERS => '1');
+					B <= (OTHERS => '0');
+				END IF;
 			ELSE
 				R <= (OTHERS => '1');
 				G <= (OTHERS => '1');
@@ -200,36 +214,37 @@ BEGIN
 				IF (button_pressed = '0') THEN
 					--Reset
 					IF (start = '0') THEN
-						left_line_counter_sup <= bar_line_orig - (bar_length/2);
-						left_line_counter_inf <= bar_line_orig + (bar_length/2);
-						right_line_counter_sup <= bar_line_orig - (bar_length/2);
-						right_line_counter_inf <= bar_line_orig + (bar_length/2);
-						ball_line_sup <= ball_line_orig - (ball_size/2);
-						ball_line_inf <= ball_line_orig + (ball_size/2);
-						ball_col_sup <= ball_col_orig - (ball_size/2);
-						ball_col_inf <= ball_col_orig + (ball_size/2);
+						button_pressed <= '1';
+						left_line_counter_sup <= bar_line_orig + (bar_length/2);
+						left_line_counter_inf <= bar_line_orig - (bar_length/2);
+						right_line_counter_sup <= bar_line_orig + (bar_length/2);
+						right_line_counter_inf <= bar_line_orig - (bar_length/2);
+						ball_line_sup <= ball_line_orig + (ball_size/2);
+						ball_line_inf <= ball_line_orig - (ball_size/2);
+						ball_col_sup <= ball_col_orig + (ball_size/2);
+						ball_col_inf <= ball_col_orig - (ball_size/2);
 						IF (ball_state_random = 1) THEN
 							ball_state <= red;
 						ELSE
 							ball_state <= blue;
 						END IF;
-						button_pressed <= '1';
 					--Game Start
 					ELSIF (rst = '0') THEN 
-						left_line_counter_sup <= left_line_random - (bar_length/2);
-						left_line_counter_inf <= left_line_random + (bar_length/2);
-						right_line_counter_sup <= right_line_random - (bar_length/2);
-						right_line_counter_inf <= right_line_random + (bar_length/2);
-						ball_line_sup <= ball_line_random - (ball_size/2);
-						ball_line_inf <= ball_line_random + (ball_size/2);
-						ball_col_sup <= ball_col_orig - (ball_size/2);
-						ball_col_inf <= ball_col_orig + (ball_size/2);
+					
+						button_pressed <= '1';
+						left_line_counter_sup <= left_line_random + (bar_length/2);
+						left_line_counter_inf <= left_line_random - (bar_length/2);
+						right_line_counter_sup <= right_line_random + (bar_length/2);
+						right_line_counter_inf <= right_line_random - (bar_length/2);
+						ball_line_sup <= ball_line_random + (ball_size/2);
+						ball_line_inf <= ball_line_random - (ball_size/2);
+						ball_col_sup <= ball_col_orig + (ball_size/2);
+						ball_col_inf <= ball_col_orig - (ball_size/2);
 						IF (ball_state_random = 1) THEN
 							ball_state <= red;
 						ELSE
 							ball_state <= blue;
 						END IF;
-						button_pressed <= '1';
 					else
 							-- Left bar movements
 						IF(SW(0) = '1' and left_line_counter_inf >= 0) THEN
