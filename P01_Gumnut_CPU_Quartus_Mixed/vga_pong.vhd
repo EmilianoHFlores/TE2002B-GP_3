@@ -15,24 +15,20 @@ ENTITY vga_pong IS
         ); 
 	PORT (
 		CLOCK_50: IN STD_LOGIC; --50MHz in our board
-		red_switch, green_switch, blue_switch: IN STD_LOGIC;
 		SW : in STD_LOGIC_VECTOR (9 downto 0); --SWITCHES
 		pixel_clk: BUFFER STD_LOGIC;
 		Hsync, Vsync: BUFFER STD_LOGIC;
 		R, G, B: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 		nblanck, nsync : OUT STD_LOGIC;
-		GSENSOR_INT			: IN		std_logic_vector(1 DOWNTO 0);
-		GSENSOR_SDI			: INOUT	std_logic;
-		GSENSOR_SDO			: INOUT	std_logic;
-		GSENSOR_CS_N		: OUT		std_logic;
-		GSENSOR_SCLK		: OUT		std_logic;
-		KEY		: 	IN 		std_logic_vector( 1 DOWNTO 0 )
+		KEY		: 	IN 		std_logic_vector( 1 DOWNTO 0 );
+		input_red : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+		input_blue : IN STD_LOGIC_VECTOR(1 DOWNTO 0)
         );
 	END vga_pong;
 
 ARCHITECTURE vga_pong OF vga_pong IS
 
-    COMPONENT random_integer IS 
+	COMPONENT random_integer IS 
         GENERIC (
             min : INTEGER := 0;
             max : INTEGER := 100;
@@ -41,19 +37,7 @@ ARCHITECTURE vga_pong OF vga_pong IS
         PORT (clk : IN STD_LOGIC;
             rand : OUT INTEGER := 0
         );
-    END COMPONENT random_integer;
-	 
-	 component acelerometro IS
-	PORT(	CLOCK_50				: IN		std_logic;
-			KEY					: IN		std_logic_vector(1 DOWNTO 0);
-			GSENSOR_INT			: IN		std_logic_vector(1 DOWNTO 0);
-			GSENSOR_SDI			: INOUT	std_logic;
-			GSENSOR_SDO			: INOUT	std_logic;
-			GSENSOR_CS_N		: OUT		std_logic;
-			GSENSOR_SCLK		: OUT		std_logic;
-			output					: OUT		std_logic_vector(7 DOWNTO 0)
-	);
-	end component;
+	END COMPONENT;
 
 -- Define constants
 	constant CLK_FREQ: integer := 50000000;  -- 50 MHz clock frequency
@@ -114,8 +98,6 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	--SPEED CONTROLLER
 	SIGNAL Jump_line : integer := 1;
 	
-	SIGNAL acel_input : std_logic_vector (7 downto 0);
-	
 	SIGNAL rst, start: STD_LOGIC;
 
 
@@ -123,8 +105,6 @@ BEGIN
 
 	rst <= KEY(0);
 	start <= KEY(1);
-	
-	ace_componente : acelerometro port map (CLOCK_50, KEY, GSENSOR_INT, GSENSOR_SDI, GSENSOR_SDO, GSENSOR_CS_N, GSENSOR_SCLK, acel_input);
 	
 	random_left: random_integer generic map (20, 460, 5) port map(CLOCK_50, left_line_random);
 	random_right: random_integer generic map (20, 460, 1) port map(CLOCK_50, right_line_random);
@@ -173,7 +153,7 @@ BEGIN
 	-------------------------------------------------------
 	--Part 2: IMAGE GENERATOR
 	-------------------------------------------------------
-	IMAGE: PROCESS (Hsync, Vsync, Vactive, dena, red_switch, green_switch, blue_switch)
+	IMAGE: PROCESS (Hsync, Vsync, Vactive, dena)
 	
 		VARIABLE line_counter: INTEGER RANGE 0 TO Vc;
 		VARIABLE column_counter: INTEGER RANGE 0 TO HC;
@@ -237,7 +217,7 @@ BEGIN
 	END PROCESS;
 	
 		-----------Botones---------------
-	PROCESS(SW, rst, acel_input)
+	PROCESS(SW, rst, start, input_red, input_blue)
 		begin
 			
 			IF(rising_edge(delay_done)) THEN				
@@ -298,20 +278,21 @@ BEGIN
 						END IF;
 
 					ELSE
+					--if input is 10, then up, if 01, then down. Else do nothing
 							-- Left bar movements
-						IF( ((acel_input(7) or acel_input(6)) = '1') and left_line_counter_inf >= 0) THEN
+						IF( (input_red = "10") and left_line_counter_inf >= 0) THEN
 							left_line_counter_sup <= left_line_counter_sup - Jump_line;
 							left_line_counter_inf <= left_line_counter_inf - Jump_line;
-						ELSIF(((acel_input(1) or acel_input(0)) = '1') and left_line_counter_sup <= 480) THEN
+						ELSIF((input_red = "01") and left_line_counter_sup <= 480) THEN
 							left_line_counter_sup <= left_line_counter_sup + Jump_line;
 							left_line_counter_inf <= left_line_counter_inf + Jump_line;
 						END IF;
 
 						-- Right bar movements
-						IF( SW(2) = '1' and right_line_counter_inf >= 0) THEN
+						IF( (input_blue = "10") and right_line_counter_inf >= 0) THEN
 							right_line_counter_sup <= right_line_counter_sup - Jump_line;
 							right_line_counter_inf <= right_line_counter_inf - Jump_line;
-						ELSIF(SW(3) = '1' and right_line_counter_sup <= 480) THEN
+						ELSIF((input_blue = "01") and right_line_counter_sup <= 480) THEN
 							right_line_counter_sup <= right_line_counter_sup + Jump_line;
 							right_line_counter_inf <= right_line_counter_inf + Jump_line;
 						END IF;
