@@ -16,7 +16,7 @@ ENTITY vga_pong IS
 	PORT (
 		clk: IN STD_LOGIC; --50MHz in our board
 		red_switch, green_switch, blue_switch: IN STD_LOGIC;
-		SW : in STD_LOGIC_VECTOR (9 downto 0); --sWITCHES
+		SW : in STD_LOGIC_VECTOR (9 downto 0); --SWITCHES
 		rst, start: in STD_LOGIC;
 		pixel_clk: BUFFER STD_LOGIC;
 		Hsync, Vsync: BUFFER STD_LOGIC;
@@ -65,7 +65,7 @@ ARCHITECTURE vga_pong OF vga_pong IS
 	SIGNAL right_line_counter_inf : INTEGER := bar_line_orig - (bar_length/2);
 
 	--For ball
-	CONSTANT ball_size : integer := 40;
+	CONSTANT ball_size : integer := 20;
 	CONSTANT ball_line_orig : integer := 240;
 	CONSTANT ball_col_orig : integer := 320;
 
@@ -100,7 +100,7 @@ BEGIN
    random_left: random_integer generic map (20, 460, 5) port map(clk, left_line_random);
    random_right: random_integer generic map (20, 460, 1) port map(clk, right_line_random);
 	random_ball: random_integer generic map (10, 470, 2) port map(clk, ball_line_random);
-	random_state: random_integer generic map (0, 2, 1) port map(clk, ball_state_random);
+	random_state: random_integer generic map (0, 100, 1) port map(clk, ball_state_random);
 
 -------------------------------------------------------
 --Part 1: CONTROL GENERATOR
@@ -224,7 +224,7 @@ BEGIN
 						ball_line_inf <= ball_line_orig - (ball_size/2);
 						ball_col_sup <= ball_col_orig + (ball_size/2);
 						ball_col_inf <= ball_col_orig - (ball_size/2);
-						IF (ball_state_random = 0) THEN
+						IF (ball_state_random < 50) THEN
 							ball_state <= red;
 						ELSE
 							ball_state <= blue;
@@ -240,7 +240,7 @@ BEGIN
 						ball_line_inf <= ball_line_random - (ball_size/2);
 						ball_col_sup <= ball_col_orig + (ball_size/2);
 						ball_col_inf <= ball_col_orig - (ball_size/2);
-						IF (ball_state_random = 0) THEN
+						IF (ball_state_random < 50) THEN
 							ball_state <= red;
 						ELSE
 							ball_state <= blue;
@@ -274,17 +274,18 @@ BEGIN
 			END IF;
 		END PROCESS;
 		
-		delay_S: process (clk)
-		begin
-			if (rising_edge(clk)) then
-				if (counter>=DELAY) then
-					counter <= 0;
-					delay_done <= '1';
-				else
-					counter <= counter + 1;
-					delay_done <= '0';
-				end if;
+	delay_S: process (clk)
+	begin
+		if (rising_edge(clk)) then
+			if (counter>=DELAY) then
+				counter <= 0;
+				delay_done <= '1';
+			else
+				counter <= counter + 1;
+				delay_done <= '0';
 			end if;
+		end if;
+
 	end process;
 
 	speed_control: PROCESS (clk, SW) is
