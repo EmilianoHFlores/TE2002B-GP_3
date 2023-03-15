@@ -31,7 +31,10 @@ ENTITY de10lite IS
 		pixel_clk: BUFFER STD_LOGIC;
 		Hsync, Vsync: BUFFER STD_LOGIC;
 		R, G, B: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-		nblanck, nsync : OUT STD_LOGIC
+		nblanck, nsync : OUT STD_LOGIC;
+		
+		-- buzzer
+		buzz : OUT STD_LOGIC
 	);
 END de10lite;
 
@@ -215,7 +218,7 @@ BEGIN
 								int_ack
 								);		
 								
-	-- Input Decoder for blue bar
+	-- Input Decoder for blue bar 000
 	PROCESS( clk_i )
 		BEGIN
 			IF rising_edge( clk_i ) THEN 
@@ -225,7 +228,7 @@ BEGIN
 			END IF;
 	END PROCESS;
 	
-	-- Input Decoder for red bar
+	-- Input Decoder for red bar 0001
 	PROCESS( clk_i )
 		BEGIN
 			IF rising_edge( clk_i ) THEN 
@@ -335,6 +338,17 @@ BEGIN
 				IF port_adr_o(3) = '1' and port_adr_o(2) = '0' and port_adr_o(1) = '1' and port_adr_o(0) = '0' and port_cyc_o = '1' 	and port_stb_o = '1' 		and port_we_o = '0' THEN
 					-- Input flag score
 					temp_score_regis <= "0000000" & score_registered;
+				END IF;
+			END IF;
+	END PROCESS;
+	
+	-- BUZZ output
+	PROCESS( clk_i )
+		BEGIN
+			IF rising_edge( clk_i ) THEN 
+				IF port_adr_o(3) = '1' and port_adr_o(2) = '0' and port_adr_o(1) = '1' and port_adr_o(0) = '1' and port_cyc_o = '1' 	and port_stb_o = '1' 		and port_we_o = '1' THEN
+					-- output bluebar
+					buzz <= port_dat_o(0);
 				END IF;
 			END IF;
 	END PROCESS;
