@@ -180,10 +180,6 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to B[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to B[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to B[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to B[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to columnas
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to columnas[2]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to columnas[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to columnas[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to R
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to R[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to R[1]
