@@ -123,9 +123,9 @@ BEGIN
     process(acel_input)
     begin
         IF (acel_input(7) = '1' or acel_input(6) = '1') THEN
-            output_red <= "01";
-        ELSIF (acel_input(0) = '1' or acel_input(1) = '1') THEN
             output_red <= "10";
+        ELSIF (acel_input(0) = '1' or acel_input(1) = '1') THEN
+            output_red <= "01";
         ELSE
             output_red <= "00";
         END IF;
@@ -149,10 +149,10 @@ BEGIN
 		LEDR(1) <='0';
         output_blue <= "00";
 		IF (boton_pres=x"2") THEN
-            output_blue <= "01";
+            output_blue <= "10";
 			LEDR(0) <= '1';
         ELSIF (boton_pres=x"8") THEN
-			output_blue <= "10";
+			output_blue <= "01";
 			LEDR(1) <= '1';
         END IF;
 	END IF;
@@ -221,7 +221,7 @@ BEGIN
 		score,
 		team_score);
 	
-	HEX0 : Decoder_0to9 port map (red_bcd, Segmentos);
-	HEX1 : Decoder_0to9 port map (blue_bcd, Segmentos2);
+	HEX0 : Decoder_0to9 port map (blue_bcd, Segmentos);
+	HEX1 : Decoder_0to9 port map (red_bcd, Segmentos2);
 
 END vga_controllers_acc_keyb;
