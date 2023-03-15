@@ -176,7 +176,7 @@ BEGIN
 							ELSIF red_bcd = "0111" THEN red_bcd <= "1000";
 							ELSIF red_bcd = "1000" THEN red_bcd <= "1001";
 							ELSIF red_bcd = "1001" THEN 
-								red_bcd <= "0000"
+								red_bcd <= "0000";
 								blue_bcd <= "0000";
 						END IF;
 					else
@@ -190,7 +190,7 @@ BEGIN
 							ELSIF blue_bcd = "0111" THEN blue_bcd <= "1000";
 							ELSIF blue_bcd = "1000" THEN blue_bcd <= "1001";
 							ELSIF blue_bcd = "1001" THEN
-								red_bcd <= "0000"
+								red_bcd <= "0000";
 								blue_bcd <= "0000";
 						END IF;
 					end if;
