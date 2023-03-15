@@ -103,7 +103,7 @@ ARCHITECTURE vga_controllers_acc_keyb OF vga_controllers_acc_keyb IS
 	SIGNAL IND_teclado : STD_LOGIC;
 	SIGNAL col_teclado : STD_LOGIC_VECTOR (2 downto 0);
 	SIGNAL BOTON_PRES : STD_LOGIC_VECTOR(3 downto 0);
-	 
+	
 	-----------------------------------------------------------
 	--01 is down, 10 is up del teclado
     SIGNAL output_red : STD_LOGIC_VECTOR(1 DOWNTO 0);
@@ -144,18 +144,18 @@ BEGIN
 
     process(CLOCK_50, Boton_pres, IND_teclado)
     begin
-	 if(rising_edge(CLOCK_50)) THEN
+	if(rising_edge(CLOCK_50)) THEN
         LEDR(0) <='0';
-			LEDR(1) <='0';
-         output_blue <= "00";
-		  IF ( IND_teclado = '1' and boton_pres=x"2") THEN
+		LEDR(1) <='0';
+        output_blue <= "00";
+		IF (boton_pres=x"2") THEN
             output_blue <= "01";
-				LEDR(0) <= '1';
-        ELSIF (IND_teclado = '1' and boton_pres=x"8") THEN
-				output_blue <= "10";
-				LEDR(1) <= '1';
+			LEDR(0) <= '1';
+        ELSIF (boton_pres=x"8") THEN
+			output_blue <= "10";
+			LEDR(1) <= '1';
         END IF;
-	 END IF;
+	END IF;
     end process;
 
 	process(CLOCK_50, score, team_score)
