@@ -22,7 +22,10 @@ ENTITY vga_pong IS
 		nblanck, nsync : OUT STD_LOGIC;
 		KEY		: 	IN 		std_logic_vector( 1 DOWNTO 0 );
 		input_red : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-		input_blue : IN STD_LOGIC_VECTOR(1 DOWNTO 0)
+		input_blue : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+		-- score is a pulse, team_score is who scored, 0 is red, 1 is blue
+		-- score, team_score : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+		score, team_score : OUT STD_LOGIC
         );
 	END vga_pong;
 
@@ -222,6 +225,7 @@ BEGIN
 			
 			IF(rising_edge(delay_done)) THEN				
 				-- Button presses
+				score <= '0';
 				IF (button_pressed = '0') THEN
 					--Reset
 					IF (start = '0') THEN
@@ -338,14 +342,18 @@ BEGIN
 								else
 									--point for red
 									ball_state <= idle;
+									score <= '1';
+									team_score <= '0';
 								end if;
 							--bounced on red bar
 							ELSIF (ball_col_inf <= left_bar_col_sup) THEN
 								IF (ball_line_sup >= left_line_counter_inf and ball_line_inf <= left_line_counter_sup) THEN
 									ball_state <= red;
 								else
-									--point for red
+									--point for blue
 									ball_state <= idle;
+									score <= '1';
+									team_score <= '1';
 								end if;
 							END IF;
 						END IF;

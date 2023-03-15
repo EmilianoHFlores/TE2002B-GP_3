@@ -69,14 +69,6 @@ set_location_assignment PIN_C12 -to SW[3]
 set_location_assignment PIN_D12 -to SW[2]
 set_location_assignment PIN_C11 -to SW[1]
 set_location_assignment PIN_C10 -to SW[0]
-set_location_assignment PIN_C14 -to Segmentos[0]
-set_location_assignment PIN_E15 -to Segmentos[1]
-set_location_assignment PIN_C15 -to Segmentos[2]
-set_location_assignment PIN_C16 -to Segmentos[3]
-set_location_assignment PIN_E16 -to Segmentos[4]
-set_location_assignment PIN_D17 -to Segmentos[5]
-set_location_assignment PIN_C17 -to Segmentos[6]
-set_location_assignment PIN_D15 -to Segmentos[7]
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name VHDL_FILE de10lite.vhd
@@ -107,14 +99,6 @@ set_location_assignment PIN_AB15 -to GSENSOR_SCLK
 set_location_assignment PIN_V11 -to GSENSOR_SDI
 set_location_assignment PIN_V12 -to GSENSOR_SDO
 set_location_assignment PIN_Y14 -to GSENSOR_INT[0]
-set_location_assignment PIN_F18 -to Segmentos2[0]
-set_location_assignment PIN_E20 -to Segmentos2[1]
-set_location_assignment PIN_E19 -to Segmentos2[2]
-set_location_assignment PIN_J18 -to Segmentos2[3]
-set_location_assignment PIN_H19 -to Segmentos2[4]
-set_location_assignment PIN_F19 -to Segmentos2[5]
-set_location_assignment PIN_F20 -to Segmentos2[6]
-set_location_assignment PIN_F17 -to Segmentos2[7]
 set_global_assignment -name VHDL_FILE vga_pong.vhd
 set_global_assignment -name VHDL_FILE random_integer.vhd
 set_location_assignment PIN_Y1 -to R[3]
@@ -158,28 +142,12 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLOCK_50
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[2]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[3]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[4]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[5]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[6]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[7]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GSENSOR_CS_N
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GSENSOR_INT[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GSENSOR_INT[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GSENSOR_SCLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GSENSOR_SDI
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GSENSOR_SDO
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[2]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[3]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[4]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[5]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[6]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[7]
 set_global_assignment -name VHDL_FILE Teclado.vhd
 set_global_assignment -name VHDL_FILE LIB_TECLADO_MATRICIAL_4x4_RevA.vhd
 set_location_assignment PIN_Y7 -to col[0]
@@ -226,6 +194,39 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to G[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to G[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to G[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VSync
+set_location_assignment PIN_C18 -to Segmentos[0]
+set_location_assignment PIN_D18 -to Segmentos[1]
+set_location_assignment PIN_E18 -to Segmentos[2]
+set_location_assignment PIN_B16 -to Segmentos[3]
+set_location_assignment PIN_A17 -to Segmentos[4]
+set_location_assignment PIN_A18 -to Segmentos[5]
+set_location_assignment PIN_B17 -to Segmentos[6]
+set_location_assignment PIN_A16 -to Segmentos[7]
+set_location_assignment PIN_F18 -to Segmentos2[0]
+set_location_assignment PIN_E20 -to Segmentos2[1]
+set_location_assignment PIN_E19 -to Segmentos2[2]
+set_location_assignment PIN_J18 -to Segmentos2[3]
+set_location_assignment PIN_H19 -to Segmentos2[4]
+set_location_assignment PIN_F19 -to Segmentos2[5]
+set_location_assignment PIN_F20 -to Segmentos2[6]
+set_location_assignment PIN_F17 -to Segmentos2[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Segmentos2[7]
+
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
