@@ -15,7 +15,7 @@ ENTITY vga_pong IS
         ); 
 	PORT (
 		CLOCK_50: IN STD_LOGIC; --50MHz in our board
-		SW : in STD_LOGIC_VECTOR (9 downto 0); --SWITCHES
+		--SW : in STD_LOGIC_VECTOR (9 downto 0); --SWITCHES
 		pixel_clk: BUFFER STD_LOGIC;
 		Hsync, Vsync: BUFFER STD_LOGIC;
 		R, G, B: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
@@ -25,7 +25,8 @@ ENTITY vga_pong IS
 		input_blue : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
 		-- score is a pulse, team_score is who scored, 0 is red, 1 is blue
 		-- score, team_score : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-		score, team_score : OUT STD_LOGIC
+		score, team_score : OUT STD_LOGIC;
+		speed : in STD_LOGIC_VECTOR (7 downto 0)
         );
 	END vga_pong;
 
@@ -220,7 +221,7 @@ BEGIN
 	END PROCESS;
 	
 		-----------Botones---------------
-	PROCESS(SW, rst, start, input_red, input_blue)
+	PROCESS(speed, rst, start, input_red, input_blue)
 		begin
 			
 			IF(rising_edge(delay_done)) THEN				
@@ -382,11 +383,11 @@ BEGIN
 
 	end process;
 
-	speed_control: PROCESS (CLOCK_50, SW) is
+	speed_control: PROCESS (CLOCK_50, speed) is
 		VARIABLE switches : std_logic_vector(3 downto 0);
 		begin
 			if (rising_edge(CLOCK_50)) then
-				switches := SW(9 downto 6);
+				switches := speed(7 downto 4);
 				Jump_line <= to_integer(unsigned(switches)) + 1;
 			end if;
 	end process;
