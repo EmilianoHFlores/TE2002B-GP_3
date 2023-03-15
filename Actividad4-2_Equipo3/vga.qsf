@@ -65,7 +65,6 @@ set_location_assignment PIN_P4 -to B[2]
 set_location_assignment PIN_T1 -to B[1]
 set_location_assignment PIN_P1 -to B[0]
 set_location_assignment PIN_N3 -to Hsync
-set_location_assignment PIN_N1 -to VSync
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to B[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to B[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to B[1]
@@ -88,7 +87,6 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to R[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to R[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to red_switch
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Vsync
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VSync
 set_global_assignment -name VHDL_FILE prueba_vga.vhd
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
