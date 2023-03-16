@@ -218,7 +218,7 @@ BEGIN
 								int_ack
 								);		
 								
-	-- Input Decoder for blue bar 000
+	-- Input Decoder for blue bar 
 	PROCESS( clk_i )
 		BEGIN
 			IF rising_edge( clk_i ) THEN 
@@ -228,7 +228,7 @@ BEGIN
 			END IF;
 	END PROCESS;
 	
-	-- Input Decoder for red bar 0001
+	-- Input Decoder for red bar 
 	PROCESS( clk_i )
 		BEGIN
 			IF rising_edge( clk_i ) THEN 
@@ -347,7 +347,7 @@ BEGIN
 		BEGIN
 			IF rising_edge( clk_i ) THEN 
 				IF port_adr_o(3) = '1' and port_adr_o(2) = '0' and port_adr_o(1) = '1' and port_adr_o(0) = '1' and port_cyc_o = '1' 	and port_stb_o = '1' 		and port_we_o = '1' THEN
-					-- output bluebar
+					-- output BUZZ
 					buzz <= port_dat_o(0);
 				END IF;
 			END IF;
