@@ -1,0 +1,131 @@
+			text
+			org 0x000 ; start here on reset
+			stm r0, counterblue
+			stm r0, counterred
+			jmp main
+			
+; Data memory layout
+				data
+displayblue:	bss 1 ; Display blue player
+displayred:		bss 1 ; Display blue player
+outred:			bss 1 ; Red bar movement
+scoreflag:		bss 1 ; Score input
+playflag:		bss 1 ; Player who score input
+acel:			bss 1 ; Accelerometer input 
+matkey:			bss 1 ; Matrix keyboard input
+outblue:		bss 1 ; Blue bar movement
+switches:		bss 1 ; Switches input
+outspeed:		bss 1 ; Speed output
+scoreregist:	bss 1 ; Score registered flag input
+buzz:			bss 1 ; Output buzzer
+btn:			bss 1 ; Input button
+start:			bss 1 ; Output start
+counterblue:	byte 0
+counterred:		byte 0
+cycle:			byte 0
+
+; Main program
+			text
+			org 0x010
+continue:	stm r0, cycle ; Store 0 in cycle
+main: 		ldm r5, counterred
+			out r5, displayred ; Output redbar score
+			ldm r5, counterblue
+			out r5, displayblue ; Output bluebar score
+			inp r2, scoreflag ; Score flag input
+			inp r3, playflag ; Player who scored input 
+			inp r5, switches ; Switches input 
+			and r5, r5, 0xF0 ; Ensure only 4 significant bits from switch get sent
+			out r5, outspeed ; Output speed game
+			inp r5, btn
+			and r5, r5, 0x01
+			out r5, start
+			inp r1, matkey ; Matrix keyboard input
+			jmp tecladomat
+contkey:	out r1, outblue ; Output blue bar movement
+			inp r5, acel ; Accelerometer input
+			jmp acelesen
+cont_acel:	out r5, outred ; Output redbar movement
+			sub r2, r2, 1 ; Check if score flag is 1
+			bz scoreup
+			jmp main
+			
+scoreup:	ldm r5, cycle ; Load cycle, and ensure that one score increment is done
+			sub r0, r5, 1
+			bz continue
+			sub r3, r3, 1 ; Check which player made the score. 1 for blue bar, 0 for red bar
+			bz player1
+			ldm r6, counterred
+			add r6, r6, 1
+			stm r6, counterred ; Load, add 1 and store in counter for red bar
+			sub r0, r6, 10 ; Ensure that counter does not go to 10
+			bz reset
+			jmp waitflag
+
+player1:	ldm r6, counterblue 
+			add r6, r6, 1
+			stm r6, counterblue ; Load, add 1 and store in counter for red bar
+			sub r0, r6, 10 ; Ensure that counter does not go to 10
+			bz reset
+			jmp waitflag
+
+reset:		add r5, r0, 0 ; If any counter is 10, reset back to 0
+			stm r5, counterblue
+			stm r5, counterred
+			jmp waitflag
+
+			
+waitflag:	inp r4, scoreregist ; If score has been set, wait until score registered flag goes down, to not repeat process
+			add r7, r0, 1
+			out r7, buzz ; Output 1 to buzzer, so it makes a sound
+			sub r0, r4, 1
+			bz waitflag
+			jsb delay
+			out r0, buzz
+			add r5, r0, 1
+			stm r5, cycle ; Store 1 in cycle, to show that one cycle has been done
+			jmp main
+			
+			
+
+acelesen:	and r0, r5, 0x18 ; Ensure the three most significant bits or three less significant bits are used 
+			bz acelgood
+			add r5, r0, 0 ; If not, send 00 to movement of red bar, which is stop
+			jmp cont_acel
+acelgood:	and r0, r5, 0xE0 ; Check three most significant bits
+			bnz upRedBar
+			add r5, r0, 1 ; If three least significant bits are used, send 01 which is down movement of red bar
+			jmp cont_acel
+
+upRedBar:	add r5, r0, 2 ; If three most significant bits are used, send 10 which is up movement of red bar
+			jmp cont_acel
+			
+			
+tecladomat:	sub r0, r1, 2 ; Check if botton press was a 2, to change movement of bluebar to go up
+			bz upBlueBar
+			sub r0, r1, 8 ; Check if botton press was a 8, to change movement of bluebar to go down
+			bz downBlueBar
+			add r1, r0, 0 ; If botton press was from another botton, send 00 which is stop blue bar
+			jmp contkey
+			
+upBlueBar:	add r1, r0, 2 ; If botton press was a 2, send 10 which is up
+			jmp contkey
+
+downBlueBar: add r1, r0, 1 ; If botton press was a 8, send 01 which is down
+			 jmp contkey
+			
+
+delay:		add r7, r0, 0
+again3:		add r6, r0, 0
+again2:		add r5, r0, 0
+again1:		add r5, r5, 1
+			sub r0, r5, 0xFF
+			bnz again1
+			add r6, r6, 1
+			sub r0, r6, 0xFF
+			bnz again2
+			add r7, r7, 1
+			sub r0, r7, 0x0C
+			bnz again3
+			ret
+			
